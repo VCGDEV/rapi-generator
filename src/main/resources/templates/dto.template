@@ -1,0 +1,17 @@
+package {basePackage}.{dtoPackage};
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+//ADD IMPORTS
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class {dtoName}DTO{
+
+    //ADD ATTRIBUTES
+}
