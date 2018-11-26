@@ -1,0 +1,92 @@
+package {basePackage}.{servicePackage}.impl;
+
+import org.springframework.hateoas.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import {basePackage}.{exceptionPackage}.{Exception};
+import {basePackage}.{dtoPackage}.{dtoName};
+import {basePackage}.{repositoryPackage}.{entityName}Repository;
+import {basePackage}.{domainPackage}.{entityName};
+
+/**
+* Versions 1.0
+* Created using Rest API Generator
+* Basic CRUD service
+*/
+@Service
+@Transactional(readOnly = true)
+public class {entityName}ServiceImpl implements {entityName}Service {
+
+    private final Logger logger = LoggerFactory.getLogger({entityName}ServiceImpl.class);
+
+    private {entityName}Repository {entityVar}Repository;
+
+    private final Map<String,Object> columnNames = new HashMap<>();
+
+    @Autowired
+    public void set{entityName}Repository({entityName}Repository {entityVar}Repository){}
+
+    /*
+    * Method to add new {entityName} in database
+    * @param {dtoVar} the values to be saved
+    * @throws {Exception} if an error happens in transaction
+    */
+    public Resource<{classId}> add{entityName}({dtoName} {dtoVar}) throws {Exception}{
+        
+    }
+
+    /**
+    * Method to update values of entity
+    * @param {dtoVar} the values to update
+    * @throws {Exception} if an error happens in transaction
+    */
+    public Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} {}
+
+    /**
+    * Get details of {entityName}
+    * @param id unique identifier to find object
+    * throws {Exception} if an error happens in select transaction
+    */
+    public Resource<{dtoName}> findById({classId} id) throws {Exception}{}
+
+    /**
+    * Get List of all {entityName}
+    * throws {Exception} if an error happens in select transaction
+    */
+    public List<Resource<{dtoName}>> findAll() throws {Exception}{}
+
+    /**
+    * Get paginated result
+    * @param page -> the page to be extracted from database
+    * @param size -> the size of dataset
+    * @param columnToOrder -> The column to sort result
+    * @param orderType -> values {'DESC','ASC'}
+    * @return the page obtained from database
+    * @throws {Exception} if an error happens in query select
+    */
+    public Page<Resource<dtoName>> getPaginatedResult(
+            Integer page,Integer size,String columnToOrder, String orderType
+        ) throws {Exception} {}
+
+    private {entityName} mapFromDTO({dtoName} {dtoVar}){
+        {entityName} {entityVar} = new {entityName}();
+        //TODO add mapping
+        return {entityVar};
+    }
+
+    private {dtoName} mapFromEntity({entityName} {entityVar}){
+        {dtoName} {dtoVar} = new {dtoName}();
+        //TODO add mapping
+        return {dtoVar};
+    }
+}
