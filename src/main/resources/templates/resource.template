@@ -1,0 +1,21 @@
+package {basePackage}.{resourcePackage};
+
+import {basePackage}.{dtoPackage}.{dtoName};
+import {basePackage}.{servicePackage}.{entityName}Service;
+import org.springframework.hateoas.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+import {basePackage}.{exceptionPackage}.{Exception};
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@RestController()
+@RequestMapping("{mapping}")
+public class {entityName}Resource {
+    private final Logger = LoggerFactory.getLogger({entityName}Resource.class);
+}
