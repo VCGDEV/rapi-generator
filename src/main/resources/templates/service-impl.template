@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -17,7 +18,7 @@ import {basePackage}.{exceptionPackage}.{Exception};
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{repositoryPackage}.{entityName}Repository;
 import {basePackage}.{domainPackage}.{entityName};
-
+import org.springframework.dao.DataIntegrityViolationException;
 /**
 * Versions 1.0
 * Created using Rest API Generator
@@ -41,8 +42,19 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @param {dtoVar} the values to be saved
     * @throws {Exception} if an error happens in transaction
     */
+    @Transactional(rollbackFor={Exception}.class)
     public Resource<{classId}> add{entityName}({dtoName} {dtoVar}) throws {Exception}{
-        
+        try{
+            {entityName} {entityVar} = mapFromDTO({dtoVar});
+            {entityVar}Repository.save({entityVar});
+            return new Resource<{classId}>({entityVar}.getId());
+        }catch(DataIntegrityViolationException dve){
+            logger.error("Error in insert transaction",dve);
+            throw new {Exception}("Error in insert transaction",HttpStatus.HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch(Exception ex){
+            logger.error("Not managed error in insert transaction",ex);
+            throw new {Exception}("Internal server error",HttpStatus.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -50,20 +62,60 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @param {dtoVar} the values to update
     * @throws {Exception} if an error happens in transaction
     */
-    public Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} {}
+    @Transactional(rollbackFor={Exception}.class)
+    public Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} {
+        try{
+            if(!{entityVar}Repository.exists({dtoVar}.getId())){
+                logger.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
+                throw new {Exception}("Object does not exist",HttpStatus.NOT_FOUND);
+            }
+            {entityName} {entityVar} = mapFromDTO({dtoVar});
+            {entityVar}Repository.save({entityVar});
+            return new Resource<{classId}>({entityVar}.getId());
+        }catch({Exception} xe){
+            throw xe;
+        }catch(Exception ex){
+            logger.error("Not managed error in insert transaction",ex);
+            throw new {Exception}("Internal server error",HttpStatus.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
     * Get details of {entityName}
     * @param id unique identifier to find object
     * throws {Exception} if an error happens in select transaction
     */
-    public Resource<{dtoName}> findById({classId} id) throws {Exception}{}
+    public Resource<{dtoName}> findById({classId} id) throws {Exception}{
+        try{
+            if(!{entityVar}Repository.exists({dtoVar}.getId())){
+                logger.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
+                throw new {Exception}("Object does not exist",HttpStatus.NOT_FOUND);
+            }
+            {dtoName} {dtoVar} = mapFromEntity({entityName}Repository.findOne(id));
+            Resource<{dtoName}> resource = new Resource<>();
+        }catch({Exception} excp){
+            throw excp;
+        }catch(Exception ex){
+            logger.error("Not managed error in select transaction");
+            throw new {Exception}("Internal server error",HttpStatus.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
     * Get List of all {entityName}
     * throws {Exception} if an error happens in select transaction
     */
-    public List<Resource<{dtoName}>> findAll() throws {Exception}{}
+    public List<Resource<{dtoName}>> findAll() throws {Exception}{
+        try{
+            return {entityVar}Repository.findAll()
+            .stream()
+            .map(e -> new Resource<{dtoName}>(mapFromEntity())
+            .collect(Collectors.toList());
+        }catch(Exception ex){
+            logger.error("Not managed error in select transaction");
+                        throw new {Exception}("Internal server error",HttpStatus.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
     * Get paginated result
@@ -76,7 +128,10 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     */
     public Page<Resource<dtoName>> getPaginatedResult(
             Integer page,Integer size,String columnToOrder, String orderType
-        ) throws {Exception} {}
+        ) throws {Exception} {
+            //TODO add algorithm
+            return null;
+        }
 
     private {entityName} mapFromDTO({dtoName} {dtoVar}){
         {entityName} {entityVar} = new {entityName}();
