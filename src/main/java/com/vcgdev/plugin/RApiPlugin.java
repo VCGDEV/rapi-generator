@@ -7,6 +7,9 @@ public class RApiPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getTasks().create("genRest",RestGenerator.class,(task) -> {
+            if (project.getProject().hasProperty("args")) {
+                task.setEntityName(project.getProperties().get("args").toString());
+            }
         });
     }
 }

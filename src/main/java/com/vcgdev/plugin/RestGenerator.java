@@ -65,6 +65,14 @@ public class RestGenerator extends DefaultTask {
         this.entityName = entityName;
     }
 
+    public String getRepositoryPackage() {
+        return repositoryPackage;
+    }
+
+    public void setRepositoryPackage(String repositoryPackage) {
+        this.repositoryPackage = repositoryPackage;
+    }
+
     @TaskAction
     public void generateResources(){
         if(null == basePackage || basePackage.trim().isEmpty())
