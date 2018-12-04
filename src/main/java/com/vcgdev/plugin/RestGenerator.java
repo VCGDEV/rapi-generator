@@ -94,4 +94,5 @@ public class RestGenerator extends DefaultTask {
         //TODO wirte into file
         //TODO extract attributes and ID from entity
     }
+
 }
