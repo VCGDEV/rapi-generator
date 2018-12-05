@@ -1,12 +1,12 @@
 package com.vcgdev.plugin;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 
 public class CodeGeneratorUtils {
+    private static final Logger logger = LoggerFactory.getLogger(CodeGeneratorUtils.class);
     //packages
     private static final String  BASE_PACKAGE = "{basePackage}";
     private static final String DTO_PACKAGE = "{dtoPackage}";
@@ -30,26 +30,36 @@ public class CodeGeneratorUtils {
     private String servicePackage;
     private String entityPackage;
     private String exceptionClass;
+    private String classId;
 
-    public CodeGeneratorUtils(String basePackage, String dtoPackage, String repositoryPackage, String exceptionPackage, String servicePackage, String entityPacakge, String exceptionClass) {
+    public CodeGeneratorUtils(String basePackage, String dtoPackage, String repositoryPackage, String exceptionPackage,
+                              String servicePackage, String entityPackage, String exceptionClass) {
         this.basePackage = basePackage;
         this.dtoPackage = dtoPackage;
         this.repositoryPackage = repositoryPackage;
         this.exceptionPackage = exceptionPackage;
         this.servicePackage = servicePackage;
-        this.entityPackage = entityPacakge;
+        this.entityPackage = entityPackage;
         this.exceptionClass = exceptionClass;
     }
 
     public String readFileTemplate(String fileTemplate, String domainName) throws IOException {
-        InputStream stream = CodeGeneratorUtils.class.getResourceAsStream("src/main/resources/"+fileTemplate);
+        logger.info("Read file template: {}", fileTemplate);
+        InputStream stream = CodeGeneratorUtils.class
+        .getResourceAsStream("/templates/"+fileTemplate);
+        if(stream==null)
+            logger.info("Read file is null");
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        if(reader==null)
+            logger.info("Reader is null");
         StringBuffer buffer = new StringBuffer();
-        String line = null;
+        String line;
         while((line = reader.readLine())!=null){
             buffer.append(line).append("\n");
         }
-
+        logger.info("{}",buffer);
+        String entityVar =  domainName.substring(0,1).toLowerCase() + domainName.substring(1);
+        String dtoVar = "DTO";
         return buffer.toString()
                 .replace(BASE_PACKAGE,this.basePackage)
                 .replace(DTO_PACKAGE,this.dtoPackage)
@@ -59,10 +69,10 @@ public class CodeGeneratorUtils {
                 .replace(ENTITY_PACKAGE,this.entityPackage)
                 .replace(EXCEPTION_CLASS,this.exceptionClass)
                 .replace(ENTITY_NAME,domainName)
+                .replace(DTO_VAR,dtoVar)
+                .replace(ENTITY_VAR,entityVar)
+                .replace(CLASS_ID,this.classId)
                 .replace(DTO_NAME,domainName.concat("DTO"));
     }
 
-    private Map<String,String> getReplacementValues(String fileTemplate,String domainName){
-        return null;
-    }
 }
