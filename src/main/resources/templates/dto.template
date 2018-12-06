@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
-//ADD IMPORTS
+{imports}
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class {dtoName}DTO{
-
-    //ADD ATTRIBUTES
+@EqualsAndHashCode
+public class {entityName}DTO{
+{attributes}
 }

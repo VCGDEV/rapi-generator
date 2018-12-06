@@ -113,8 +113,8 @@ public class RestGenerator extends DefaultTask {
             throw new IllegalArgumentException("You must provide the exception class");
         logger.info("Generate resources for: {}",entityName);
         codeGeneratorUtils = new CodeGeneratorUtils(basePackage,dtoPackage,repositoryPackage,exceptionPackage,servicePackage,entityPackage,exceptionClass);
-        String serviceContent = codeGeneratorUtils.readFileTemplate("service.template",entityName);
-        logger.info(serviceContent);
+        codeGeneratorUtils.generateDTO(entityName);
+        //String serviceContent = codeGeneratorUtils.readFileTemplate("service.template",entityName);
         //TODO read from template
         //TODO wirte into file
         //TODO extract attributes and ID from entity
