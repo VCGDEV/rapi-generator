@@ -143,6 +143,7 @@ class CodeGeneratorUtils {
         //generate DTO first to extract classId
         generateDTO(domainName);
         generateFile("repository.template",domainName);
+        generateFile("service.template",domainName);
     }
 
     void writeFile(File file,String path, String content) throws IOException{
