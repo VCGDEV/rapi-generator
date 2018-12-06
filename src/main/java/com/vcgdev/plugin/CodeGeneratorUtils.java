@@ -66,7 +66,7 @@ class CodeGeneratorUtils {
         }
         reader.close();
         String entityVar =  domainName.substring(0,1).toLowerCase() + domainName.substring(1);
-        String dtoVar = "DTO";
+        String dtoVar = entityVar.concat("DTO");
 
         return buffer.toString()
                 .replace(BASE_PACKAGE,this.basePackage)
@@ -144,6 +144,7 @@ class CodeGeneratorUtils {
         generateDTO(domainName);
         generateFile("repository.template",domainName);
         generateFile("service.template",domainName);
+        generateFile("service-impl.template",domainName);
     }
 
     void writeFile(File file,String path, String content) throws IOException{
