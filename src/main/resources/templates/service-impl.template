@@ -159,13 +159,13 @@ public class {entityName}ServiceImpl implements {entityName}Service {
 
     private {entityName} mapFromDTO({dtoName} {dtoVar}){
         {entityName} {entityVar} = new {entityName}();
-        //TODO add mapping
+{dtoMapping}
         return {entityVar};
     }
 
     private {dtoName} mapFromEntity({entityName} {entityVar}){
         {dtoName} {dtoVar} = new {dtoName}();
-        //TODO add mapping
+{entityMapping}
         return {dtoVar};
     }
 }

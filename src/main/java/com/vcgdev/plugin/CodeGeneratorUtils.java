@@ -4,8 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 class CodeGeneratorUtils {
     private static final Logger logger = LoggerFactory.getLogger(CodeGeneratorUtils.class);
@@ -37,6 +40,7 @@ class CodeGeneratorUtils {
     private String exceptionClass;
     private String classId;
     private String resourcePackage;
+    private List<String> attributeNames = new ArrayList<>();
     CodeGeneratorUtils(String basePackage, String dtoPackage, String repositoryPackage, String exceptionPackage,
                               String servicePackage, String entityPackage,
                        String exceptionClass,String resourcePackage) {
@@ -68,8 +72,19 @@ class CodeGeneratorUtils {
         String entityVar =  domainName.substring(0,1).toLowerCase() + domainName.substring(1);
         String dtoVar = entityVar.concat("DTO");
 
-        return buffer.toString()
-                .replace(BASE_PACKAGE,this.basePackage)
+        String templateString = buffer.toString();
+
+        String dtoMapping;
+        String entityMapping;
+        if(fileTemplate.contains("service-impl")){
+            dtoMapping = generateMapping(DTO_VAR,ENTITY_VAR);
+            logger.info(dtoMapping);
+            templateString = templateString.replace("{dtoMapping}",dtoMapping);
+            entityMapping = generateMapping(ENTITY_VAR,DTO_VAR);
+            logger.info(entityMapping);
+            templateString = templateString.replace("{entityMapping}",entityMapping);
+        }
+        templateString = templateString.replace(BASE_PACKAGE,this.basePackage)
                 .replace(DTO_PACKAGE,this.dtoPackage)
                 .replace(REPOSITORY_PACKAGE,this.repositoryPackage)
                 .replace(EXCEPTION_PACKAGE,this.exceptionPackage)
@@ -82,6 +97,7 @@ class CodeGeneratorUtils {
                 .replace(CLASS_ID,this.classId)
                 .replace(DTO_NAME,domainName.concat("DTO"))
                 .replace(RESOURCE_PACKAGE,this.resourcePackage);
+        return  templateString;
     }
 
     void generateDTO(String domainName) throws IOException {
@@ -112,9 +128,11 @@ class CodeGeneratorUtils {
             if(matcher.matches()){
                 attributesContent.append("\t").append(line)
                         .append("\n");
+                String []attributeParts =line.split(" ");//private Class id;
+                String attributeName = attributeParts[2].replace(";","");
+                attributeNames.add(attributeName);
                 if(searchId){
-                    classId = line.split(" ")[1];//private Class id;
-                    logger.info("ClassID: {}",classId);
+                    classId = attributeParts[1];
                     searchId = Boolean.FALSE;
                 }
             }
@@ -145,6 +163,26 @@ class CodeGeneratorUtils {
         generateFile("repository.template",domainName);
         generateFile("service.template",domainName);
         generateFile("service-impl.template",domainName);
+    }
+
+    String generateMapping(String from,String to){
+        logger.info("{}",attributeNames);
+        return attributeNames.stream()
+                .map(s ->{
+                    String attribute = s.substring(0,1).toUpperCase()
+                               +s.substring(1);
+                    StringBuffer setter = new StringBuffer();
+                    setter.append("\t\t")
+                            .append(to)
+                            .append(".set")
+                            .append(attribute)
+                            .append("(")
+                            .append(from)
+                            .append(".get")
+                            .append(attribute)
+                            .append("())");
+                    return setter.toString();
+                }).collect(Collectors.joining(";\n")).concat(";");
     }
 
     void writeFile(File file,String path, String content) throws IOException{
