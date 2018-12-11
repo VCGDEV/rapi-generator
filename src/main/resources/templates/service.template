@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 */
 public interface {entityName}Service{
 
-    /*
+    /**
     * Method to add new {entityName} in database
     * @param {dtoVar} the values to be saved
     * @throws {Exception} if an error happens in transaction

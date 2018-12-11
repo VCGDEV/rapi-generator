@@ -6,16 +6,56 @@ import org.springframework.hateoas.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 import {basePackage}.{exceptionPackage}.{Exception};
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
 @RestController()
 @RequestMapping("{mapping}")
 public class {entityName}Resource {
     private final Logger = LoggerFactory.getLogger({entityName}Resource.class);
+
+    private {entityName}Service {entityVar}Service;
+
+    @Autowired
+    public set{entityName}Service({entityName}Service {entityVar}Service){
+        this.{entityVar}Service = {entityVar}Service;
+    }
+
+    @PostMapping()
+    public HttpEntity<Resource<{classId}>> add{entityName}(
+        @RequestBody @Validated {dtoName} {dtoVar}
+    ){
+        logger.info("Add new {entityName} - {}",{dtoVar});
+        Resource<{classId}> resource = this.{entityVar}Service.add{entityName}({dtoVar});
+        return new ResponseEntity(resource,HttpStatus.OK);
+    }
+
+
+    public Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} {
+
+    }
+
+
+    public Resource<{dtoName}> findById({classId} id) throws {Exception}{
+
+    }
+
+
+    public List<Resource<{dtoName}>> findAll() throws {Exception}{
+
+    }
+
+
+    public Page<Resource<{dtoName}>> getPaginatedResult(
+            Integer page,Integer size,String columnToOrder, String orderType
+        ) throws {Exception} {
+
+    }
 }
