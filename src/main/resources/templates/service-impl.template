@@ -35,7 +35,11 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     private {entityName}Repository {entityVar}Repository;
 
     //TODO add attributes to order paginated result
-    private final Map<String,Object> columnNames = new HashMap<>();
+    private final Map<String,String> columnNames = new HashMap<>();
+
+    {
+        columnNames.put("id","id");
+    }
 
     @Autowired
     public void set{entityName}Repository({entityName}Repository {entityVar}Repository){
@@ -148,7 +152,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 Page<{entityName}> {entityVar}Page = {entityVar}Repository.findAll(request);
                 List<Resource<{dtoName}>> resourcesList = userPage.getContent()
                                     .stream()
-                                    .map(e -> new Resource(mapFromEntity(e)))
+                                    .map(e -> new Resource<>(mapFromEntity(e)))
                                     .collect(Collectors.toList());
                 return new PageImpl<>(resourcesList, request, {entityVar}Page.getTotalElements());
             }catch (Exception ex){

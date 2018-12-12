@@ -96,6 +96,7 @@ class CodeGeneratorUtils {
                 .replace(ENTITY_VAR,entityVar)
                 .replace(CLASS_ID,this.classId)
                 .replace(DTO_NAME,domainName.concat("DTO"))
+                .replace("{mapping}",domainName.toLowerCase()+"s")//TODO add better way to generate mapping
                 .replace(RESOURCE_PACKAGE,this.resourcePackage);
         return  templateString;
     }
@@ -163,6 +164,7 @@ class CodeGeneratorUtils {
         generateFile("repository.template",domainName);
         generateFile("service.template",domainName);
         generateFile("service-impl.template",domainName);
+        generateFile("resource.template",domainName);
     }
 
     String generateMapping(String from,String to){

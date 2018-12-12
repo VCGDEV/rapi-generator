@@ -3,6 +3,7 @@ package {basePackage}.{resourcePackage};
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,43 +20,54 @@ import javax.validation.Valid;
 @RestController()
 @RequestMapping("{mapping}")
 public class {entityName}Resource {
-    private final Logger = LoggerFactory.getLogger({entityName}Resource.class);
+    private final Logger logger= LoggerFactory.getLogger({entityName}Resource.class);
 
     private {entityName}Service {entityVar}Service;
 
     @Autowired
-    public set{entityName}Service({entityName}Service {entityVar}Service){
+    public void set{entityName}Service({entityName}Service {entityVar}Service){
         this.{entityVar}Service = {entityVar}Service;
     }
 
-    @PostMapping()
+    @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
     public HttpEntity<Resource<{classId}>> add{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar}
-    ){
+    ) throws {Exception}{
         logger.info("Add new {entityName} - {}",{dtoVar});
         Resource<{classId}> resource = this.{entityVar}Service.add{entityName}({dtoVar});
-        return new ResponseEntity(resource,HttpStatus.OK);
+        return new ResponseEntity<>(resource,HttpStatus.OK);
     }
 
-
-    public Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} {
-
-    }
-
-
-    public Resource<{dtoName}> findById({classId} id) throws {Exception}{
-
-    }
-
-
-    public List<Resource<{dtoName}>> findAll() throws {Exception}{
-
-    }
-
-
-    public Page<Resource<{dtoName}>> getPaginatedResult(
-            Integer page,Integer size,String columnToOrder, String orderType
+    @PutMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    public HttpEntity<Resource<{classId}>> update{entityName}(
+        @RequestBody @Validated {dtoName} {dtoVar}
         ) throws {Exception} {
+        logger.info("Update {entityName} {}",{dtoVar});
+        return new ResponseEntity<>(this.{entityVar}Service.update{entityName}({dtoVar}),HttpStatus.OK);
+    }
 
+    @GetMapping(value="{id}",produces = MediaTypes.HAL_JSON_VALUE)
+    public HttpEntity<Resource<{dtoName}>> findById(@PathVariable {classId} id) throws {Exception}{
+        logger.info("find {entityName} by id: {}",id);
+        return new ResponseEntity<>(this.{entityVar}Service.findById(id),HttpStatus.OK);
+    }
+
+    @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    public HttpEntity<List<Resource<{dtoName}>>> findAll() throws {Exception}{
+        logger.info("find all {entityName} ");
+        return new ResponseEntity<>(this.{entityVar}Service.findAll(),HttpStatus.OK);
+    }
+
+    @GetMapping(value="paginatedResult",produces = MediaTypes.HAL_JSON_VALUE)
+    public HttpEntity<Page<Resource<{dtoName}>>> getPaginatedResult(
+            @RequestParam(required = false,defaultValue = "0") Integer page,
+            @RequestParam(required = false,defaultValue = "20") Integer size,
+            @RequestParam(required = false) String columnToOrder,
+            @RequestParam(required = false) String orderType
+        ) throws {Exception} {
+        logger.info("Get paginated result - page: {}, columnOrder: {} - orderType: {}",
+                        page,size,columnToOrder,orderType);
+        Page<Resource<{dtoName}>> paginatedResult = this.{entityVar}Service.getPaginatedResult(page,size,columnToOrder,orderType);
+        return new ResponseEntity<>(paginatedResult,HttpStatus.OK);
     }
 }
