@@ -38,11 +38,13 @@ public class {entityName}Resource {
         return new ResponseEntity<>(resource,HttpStatus.OK);
     }
 
-    @PutMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    @PutMapping(value="{id}",produces = MediaTypes.HAL_JSON_VALUE)
     public HttpEntity<Resource<{classId}>> update{entityName}(
-        @RequestBody @Validated {dtoName} {dtoVar}
+        @RequestBody @Validated {dtoName} {dtoVar},
+        @PathVariable {classId} id
         ) throws {Exception} {
-        logger.info("Update {entityName} {}",{dtoVar});
+        logger.info("Update {entityName} {} - ID: {}",{dtoVar},id);
+        {dtoVar}.setId(id);
         return new ResponseEntity<>(this.{entityVar}Service.update{entityName}({dtoVar}),HttpStatus.OK);
     }
 
