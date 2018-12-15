@@ -161,6 +161,7 @@ class CodeGeneratorUtils {
     void generateRestEndpoint(String domainName) throws IOException{
         //generate DTO first to extract classId
         generateDTO(domainName);
+        generateFile("exception.template",domainName);
         generateFile("repository.template",domainName);
         generateFile("service.template",domainName);
         generateFile("service-impl.template",domainName);
@@ -214,6 +215,10 @@ class CodeGeneratorUtils {
             filePath = basePath.concat(repositoryPackage.replace(".","/"))
                     .concat("/");
             fileName = domainName.concat("Repository.java");
+        }else if(fileTemplate.contains("exception")){
+            filePath = basePath.concat(exceptionPackage.replace(".","/"))
+                    .concat("/");
+            fileName = exceptionClass.concat(".java");
         }
         File fileToGenerate = new File(filePath.concat(fileName));
         if(!fileToGenerate.exists()){

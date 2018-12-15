@@ -18,7 +18,7 @@ maven {
 and also add dependency 
 
 ```
-   classpath("com.vcgdev.plugin:rapi-generator:1.0")
+   classpath("com.vcgdev.plugin:rapi-generator:1.1")
 ```
 
 you will need to apply the plugin
