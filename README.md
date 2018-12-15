@@ -1,13 +1,5 @@
 REST API Generator
 =================
-Install
-======
-
-Run gradlew command in linux terminal
-
-```
-$ ./gradlew publish
-```
 
 Development
 ======
@@ -15,12 +7,12 @@ Development
 Create a new  based rest project in [start.spring.io](http://start.spring.io)
 and add the next dependencies: jpa,hateoas, web, h2 and lombok
 
-once you download the project add next lines on build.gradle file in the repositories section:
+Add maven repository to build.gradle file in buildScript 
 
 ```
-    maven {
-		url uri('../rapi-generator/build/repos/snapshots')
-    }
+maven {
+   url 'http://5.189.184.52:8081/artifactory/libs-snapshot/'
+}
 ```
 
 and also add dependency 
