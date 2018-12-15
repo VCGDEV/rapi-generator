@@ -42,25 +42,6 @@ genRest{
 }
 ```
 
-exceptionClass must have the next code: 
-
-```
-@Data
-@ToString
-@EqualsAndHashCode(callSuper = false)
-public class BaseException extends Exception {
-    private HttpStatus status;
-    private String message;
-
-    public BaseException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
-        this.status = HttpStatus.NOT_FOUND;
-    }
-}
-```
-you can put the previous class in any package but you have to give the package name in the plugin configuration
-
 With previous configurations just run the next command
 
 ```
