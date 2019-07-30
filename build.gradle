@@ -8,9 +8,12 @@ buildscript {
             }
             name = "maven-main-cache"
         }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.9.8"
     }
 }
 
@@ -20,8 +23,10 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'signing'
+    id "com.jfrog.artifactory" version "4.9.8"
 }
 
+apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.artifactory"
 group 'com.vcgdev.plugin'
 version '1.1-SNAPSHOT'
@@ -45,7 +50,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'rapi-generator'
-            version = '1.0.1'
+            version = '1.2'
             from components.java
             artifact sourcesJar
             artifact javadocJar

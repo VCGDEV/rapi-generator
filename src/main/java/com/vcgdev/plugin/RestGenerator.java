@@ -115,7 +115,7 @@ public class RestGenerator extends DefaultTask {
         codeGeneratorUtils = new CodeGeneratorUtils(basePackage,dtoPackage,
                 repositoryPackage,exceptionPackage,servicePackage,entityPackage,exceptionClass
         ,resourcePackage);
-        codeGeneratorUtils.generateRestEndpoint(entityName);
+        codeGeneratorUtils.createDomainStructure(entityName);
     }
 
 }

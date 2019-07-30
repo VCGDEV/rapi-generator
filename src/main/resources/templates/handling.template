@@ -1,0 +1,21 @@
+package {basePackage}.{resourcePackage};
+
+import {basePackage}.{exceptionPackage}.{Exception};
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class ExceptionHandling {
+
+    @ExceptionHandler({Exception}.class)
+    public HttpEntity<Object> handleGeneralException(
+            {Exception} e
+    ){
+        return new ResponseEntity<>(e,e.getStatus());
+    }
+
+    //TODO add your own exception handling
+
+}

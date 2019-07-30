@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ class CodeGeneratorUtils {
         this.resourcePackage = resourcePackage;
     }
 
-    String readFileTemplate(String fileTemplate, String domainName) throws IOException {
+    private String readFileTemplate(String fileTemplate, String domainName) throws IOException {
         logger.info("Read file template: {}", fileTemplate);
         InputStream stream = CodeGeneratorUtils.class
         .getResourceAsStream("/templates/"+fileTemplate);
@@ -101,7 +102,7 @@ class CodeGeneratorUtils {
         return  templateString;
     }
 
-    void generateDTO(String domainName) throws IOException {
+    private void generateDTO(String domainName) throws IOException {
         String basePath = JAVA_SOURCE_PATH+
                 basePackage.replace(".","/");
         String entityPath = basePath        +"/"+entityPackage.replace(".","/");
@@ -158,17 +159,27 @@ class CodeGeneratorUtils {
 
     }
 
-    void generateRestEndpoint(String domainName) throws IOException{
+    void createDomainStructure(String domainName) throws IOException{
         //generate DTO first to extract classId
         generateDTO(domainName);
-        generateFile("exception.template",domainName);
-        generateFile("repository.template",domainName);
-        generateFile("service.template",domainName);
-        generateFile("service-impl.template",domainName);
-        generateFile("resource.template",domainName);
+        fileNames().parallelStream()
+                .forEach(fileName -> generateFile(fileName, domainName));
+
     }
 
-    String generateMapping(String from,String to){
+    private List<String> fileNames() {
+        return Arrays.asList(
+                "exception.template",
+                "repository.template",
+                "service.template",
+                "service-impl.template",
+                "resource.template",
+                "handling.template",
+                "mapper.template"
+        );
+    }
+
+    private String generateMapping(String from,String to){
         logger.info("{}",attributeNames);
         return attributeNames.stream()
                 .map(s ->{
@@ -188,7 +199,7 @@ class CodeGeneratorUtils {
                 }).collect(Collectors.joining(";\n")).concat(";");
     }
 
-    void writeFile(File file,String path, String content) throws IOException{
+    private void writeFile(File file,String path, String content) throws IOException{
         if (!new File(path).exists()){
             logger.info("Generate new dir");
             new File(path).mkdir();
@@ -198,12 +209,13 @@ class CodeGeneratorUtils {
         writer.close();
     }
 
-    void generateFile(String fileTemplate,String domainName) throws IOException{
+    private void generateFile(String fileTemplate,String domainName) {
         String fileName = domainName.concat("Service.java");
         String basePath = JAVA_SOURCE_PATH.concat(basePackage.replace(".","/"))
                             .concat("/");
         String filePath = basePath.concat(servicePackage.replace(".","/"))
                             .concat("/");
+        //TODO use switch instead
         if(fileTemplate.contains("service-impl")){
             fileName = domainName.concat("ServiceImpl.java");
             filePath = filePath.concat("impl/");
@@ -219,11 +231,19 @@ class CodeGeneratorUtils {
             filePath = basePath.concat(exceptionPackage.replace(".","/"))
                     .concat("/");
             fileName = exceptionClass.concat(".java");
+        }else if(fileTemplate.contains("handling")){
+            fileName = "ExceptionHandling.java";
+            filePath = basePath.concat(resourcePackage.replace(".","/"))
+                    .concat("/");
         }
         File fileToGenerate = new File(filePath.concat(fileName));
         if(!fileToGenerate.exists()){
-            String fileContent = readFileTemplate(fileTemplate,domainName);
-            writeFile(fileToGenerate,filePath,fileContent);
+            try {
+                String fileContent = readFileTemplate(fileTemplate,domainName);
+                writeFile(fileToGenerate, filePath, fileContent);
+            }catch (IOException io) {
+                throw new RuntimeException(String.format("Could not generate file, from template %s", fileTemplate));
+            }
         }else{
             logger.info("File: {} already exists",fileName);
         }

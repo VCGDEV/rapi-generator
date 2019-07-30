@@ -1,0 +1,12 @@
+package {basePackage}.{mapperPackage};
+
+import {basePackage}.{dtoPackage}.{dtoName};
+import {basePackage}.{domainPackage}.{entityName};
+
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE
+)
+public interface {entityName}Mapper {
+    {dtoName} userToDTO({entityName} {entityVar});
+    {entityName} userFromDTO({dtoName} {dtoVar});
+}
