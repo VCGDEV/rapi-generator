@@ -2,7 +2,7 @@ package {basePackage}.{mapperPackage};
 
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{domainPackage}.{entityName};
-
+import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE
 )

@@ -19,7 +19,7 @@ public class RestGenerator extends DefaultTask {
     private String repositoryPackage;
     private String exceptionClass;
     private String exceptionPackage;
-    private final String SOURCE_PATH = "src/main/java";
+    private String mapperPackage;
     private CodeGeneratorUtils codeGeneratorUtils;
     public String getBasePackage() {
         return basePackage;
@@ -65,7 +65,7 @@ public class RestGenerator extends DefaultTask {
         return entityName;
     }
 
-    public void setEntityName(String entityName) {
+    protected void setEntityName(String entityName) {
         this.entityName = entityName;
     }
 
@@ -93,6 +93,14 @@ public class RestGenerator extends DefaultTask {
         this.exceptionPackage = exceptionPackage;
     }
 
+    public String getMapperPackage() {
+        return mapperPackage;
+    }
+
+    public void setMapperPackage(String mapperPackage) {
+        this.mapperPackage = mapperPackage;
+    }
+
     @TaskAction
     public void generateResources() throws IOException {
         if(null == basePackage || basePackage.trim().isEmpty())
@@ -114,7 +122,7 @@ public class RestGenerator extends DefaultTask {
         logger.info("Generate resources for: {}",entityName);
         codeGeneratorUtils = new CodeGeneratorUtils(basePackage,dtoPackage,
                 repositoryPackage,exceptionPackage,servicePackage,entityPackage,exceptionClass
-        ,resourcePackage);
+        ,resourcePackage, mapperPackage);
         codeGeneratorUtils.createDomainStructure(entityName);
     }
 

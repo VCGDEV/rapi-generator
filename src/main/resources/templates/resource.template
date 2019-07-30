@@ -12,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.stream.Collectors;
 import {basePackage}.{exceptionPackage}.{Exception};
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
 
 @RestController()
 @RequestMapping("{mapping}")
@@ -30,38 +30,46 @@ public class {entityName}Resource {
     }
 
     @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<Resource<{classId}>> add{entityName}(
+    public HttpEntity<Resource<{dtoName}>> add{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar}
     ) throws {Exception}{
         logger.info("Add new {entityName} - {}",{dtoVar});
-        Resource<{classId}> resource = this.{entityVar}Service.add{entityName}({dtoVar});
+        {dtoName} dto = this.{entityVar}Service.add{entityName}({dtoVar});
+        Resource<{dtoName}> resource = new Resource(dto);
         return new ResponseEntity<>(resource,HttpStatus.OK);
     }
 
     @PutMapping(value="{id}",produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<Resource<{classId}>> update{entityName}(
+    public HttpEntity<Resource<{dtoName}>> update{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar},
         @PathVariable {classId} id
         ) throws {Exception} {
         logger.info("Update {entityName} {} - ID: {}",{dtoVar},id);
         {dtoVar}.setId(id);
-        return new ResponseEntity<>(this.{entityVar}Service.update{entityName}({dtoVar}),HttpStatus.OK);
+        {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});
+        Resource<{dtoName}> resource = new Resource(dto);
+        return new ResponseEntity<>(resource,HttpStatus.OK);
     }
 
     @GetMapping(value="{id}",produces = MediaTypes.HAL_JSON_VALUE)
     public HttpEntity<Resource<{dtoName}>> findById(@PathVariable {classId} id) throws {Exception}{
         logger.info("find {entityName} by id: {}",id);
-        return new ResponseEntity<>(this.{entityVar}Service.findById(id),HttpStatus.OK);
+        Resource<{dtoName}> resource = new Resource(this.{entityVar}Service.findById(id));
+        return new ResponseEntity<>(resource,HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
     public HttpEntity<List<Resource<{dtoName}>>> findAll() throws {Exception}{
         logger.info("find all {entityName} ");
-        return new ResponseEntity<>(this.{entityVar}Service.findAll(),HttpStatus.OK);
+        List<Resource<{dtoName}>> resources = this.{entityVar}Service.findAll()
+                                                .parallelStream()
+                                                .map(Resource::new)
+                                                .collect(Collectors.toList());
+        return new ResponseEntity<>(resources,HttpStatus.OK);
     }
 
     @GetMapping(value="paginatedResult",produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<Page<Resource<{dtoName}>>> getPaginatedResult(
+    public HttpEntity<Page<{dtoName}>> getPaginatedResult(
             @RequestParam(required = false,defaultValue = "0") Integer page,
             @RequestParam(required = false,defaultValue = "20") Integer size,
             @RequestParam(required = false) String columnToOrder,
@@ -69,7 +77,7 @@ public class {entityName}Resource {
         ) throws {Exception} {
         logger.info("Get paginated result - page: {}, columnOrder: {} - orderType: {}",
                         page,size,columnToOrder,orderType);
-        Page<Resource<{dtoName}>> paginatedResult = this.{entityVar}Service.getPaginatedResult(page,size,columnToOrder,orderType);
+        Page<{dtoName}> paginatedResult = this.{entityVar}Service.getPaginatedResult(page,size,columnToOrder,orderType);
         return new ResponseEntity<>(paginatedResult,HttpStatus.OK);
     }
 }

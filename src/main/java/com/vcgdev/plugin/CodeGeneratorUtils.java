@@ -21,6 +21,7 @@ class CodeGeneratorUtils {
     private static final String SERVICE_PACKAGE = "{servicePackage}";
     private static final String ENTITY_PACKAGE = "{domainPackage}";
     private static final String RESOURCE_PACKAGE = "{resourcePackage}";
+    private static final String MAPPER_PACKAGE = "{mapperPackage}";
     //names and attributes
     private static final String ENTITY_NAME = "{entityName}";
     private static final String ENTITY_VAR = "{entityVar}";
@@ -41,10 +42,12 @@ class CodeGeneratorUtils {
     private String exceptionClass;
     private String classId;
     private String resourcePackage;
+    private String mapperPackage;
     private List<String> attributeNames = new ArrayList<>();
     CodeGeneratorUtils(String basePackage, String dtoPackage, String repositoryPackage, String exceptionPackage,
                               String servicePackage, String entityPackage,
-                       String exceptionClass,String resourcePackage) {
+                       String exceptionClass,String resourcePackage,
+                       String mapperPackage) {
         this.basePackage = basePackage;
         this.dtoPackage = dtoPackage;
         this.repositoryPackage = repositoryPackage;
@@ -53,6 +56,7 @@ class CodeGeneratorUtils {
         this.entityPackage = entityPackage;
         this.exceptionClass = exceptionClass;
         this.resourcePackage = resourcePackage;
+        this.mapperPackage = mapperPackage;
     }
 
     private String readFileTemplate(String fileTemplate, String domainName) throws IOException {
@@ -97,6 +101,7 @@ class CodeGeneratorUtils {
                 .replace(ENTITY_VAR,entityVar)
                 .replace(CLASS_ID,this.classId)
                 .replace(DTO_NAME,domainName.concat("DTO"))
+                .replace(MAPPER_PACKAGE, this.mapperPackage)
                 .replace("{mapping}",domainName.toLowerCase()+"s")//TODO add better way to generate mapping
                 .replace(RESOURCE_PACKAGE,this.resourcePackage);
         return  templateString;
@@ -234,6 +239,10 @@ class CodeGeneratorUtils {
         }else if(fileTemplate.contains("handling")){
             fileName = "ExceptionHandling.java";
             filePath = basePath.concat(resourcePackage.replace(".","/"))
+                    .concat("/");
+        } else if(fileTemplate.contains("mapper")) {
+            fileName = domainName.concat("Mapper.java");
+            filePath = basePath.concat(mapperPackage.replace(".","/"))
                     .concat("/");
         }
         File fileToGenerate = new File(filePath.concat(fileName));

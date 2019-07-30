@@ -79,7 +79,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 logger.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
                 throw new {Exception}("Object does not exist",HttpStatus.NOT_FOUND);
             }
-            {entityName} {entityVar} = {entityVar}Mapper.{entityVar}FromDTO({dtoVar});
+            {entityName} {entityVar} = {entityVar}Mapper.map({dtoVar});
             {entityVar}Repository.save({entityVar});
             return {entityVar}Mapper.map({entityVar});
         }catch({Exception} xe){
@@ -118,7 +118,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
         try{
             return {entityVar}Repository.findAll()
             .stream()
-            .map(this::{entityVar}Mapper.map)
+            .map({entityVar}Mapper::map)
             .collect(Collectors.toList());
         }catch(Exception ex){
             logger.error("Not managed error in select transaction");
@@ -151,7 +151,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 Page<{entityName}> {entityVar}Page = {entityVar}Repository.findAll(request);
                 List<{dtoName}> resourcesList = userPage.getContent()
                                     .stream()
-                                    .map(this::{entityVar}Mapper.map)
+                                    .map({entityVar}Mapper::map)
                                     .collect(Collectors.toList());
                 return new PageImpl<>(resourcesList, request, {entityVar}Page.getTotalElements());
             }catch (Exception ex){

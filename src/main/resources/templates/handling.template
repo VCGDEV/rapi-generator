@@ -13,7 +13,7 @@ public class ExceptionHandling {
     public HttpEntity<Object> handleGeneralException(
             {Exception} e
     ){
-        return new ResponseEntity<>(e,e.getStatus());
+        return new ResponseEntity<>(e.toJson(),e.getStatus());
     }
 
     //TODO add your own exception handling
