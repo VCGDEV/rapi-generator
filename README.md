@@ -15,10 +15,17 @@ maven {
 }
 ```
 
-and also add dependency 
+and also add dependency in buildscript section
 
 ```
    classpath("com.vcgdev.plugin:rapi-generator:1.2")
+```
+
+Add mapstruct to your project, version used in example: 1.3.0.Final
+
+```
+  implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+  annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 ```
 
 you will need to apply the plugin
