@@ -3,7 +3,6 @@ package {basePackage}.{servicePackage}.impl;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,11 +53,11 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @throws {Exception} if an error happens in transaction
     */
     @Transactional(rollbackFor={Exception}.class)
-    public Resource<{classId}> add{entityName}({dtoName} {dtoVar}) throws {Exception}{
+    public {dtoName} add{entityName}({dtoName} {dtoVar}) throws {Exception}{
         try{
-            {entityName} {entityVar} = {entityVar}Mapper.{entityVar}FromDTO({dtoVar});
+            {entityName} {entityVar} = {entityVar}Mapper.map({dtoVar});
             {entityVar}Repository.save({entityVar});
-            return new Resource<>({entityVar}.getId());
+            return {entityVar}Mapper.map({entityVar});
         }catch(DataIntegrityViolationException dve){
             logger.error("Error in insert transaction",dve);
             throw new {Exception}("Error in insert transaction",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,7 +73,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @throws {Exception} if an error happens in transaction
     */
     @Transactional(rollbackFor={Exception}.class)
-    public Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} {
+    public {dtoName} update{entityName}({dtoName} {dtoVar}) throws {Exception} {
         try{
             if(!{entityVar}Repository.existsById({dtoVar}.getId())){
                 logger.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
@@ -82,7 +81,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             }
             {entityName} {entityVar} = {entityVar}Mapper.{entityVar}FromDTO({dtoVar});
             {entityVar}Repository.save({entityVar});
-            return new Resource<{classId}>({entityVar}.getId());
+            return {entityVar}Mapper.map({entityVar});
         }catch({Exception} xe){
             throw xe;
         }catch(Exception ex){
@@ -96,15 +95,13 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @param id unique identifier to find object
     * throws {Exception} if an error happens in select transaction
     */
-    public Resource<{dtoName}> findById({classId} id) throws {Exception}{
+    public {dtoName} findById({classId} id) throws {Exception}{
         try{
             if(!{entityVar}Repository.existsById(id)){
                 logger.error("Entity not exists in database - ID: {}",id);
                 throw new {Exception}("Object does not exist",HttpStatus.NOT_FOUND);
             }
-            {dtoName} {dtoVar} = {entityVar}Mapper.{entityVar}ToDTO({entityVar}Repository.getOne(id));
-            Resource<{dtoName}> resource = new Resource<>({dtoVar});
-            return resource;
+            return {entityVar}Mapper.map({entityVar}Repository.getOne(id));
         }catch({Exception} excp){
             throw excp;
         }catch(Exception ex){
@@ -117,11 +114,11 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * Get List of all {entityName}
     * throws {Exception} if an error happens in select transaction
     */
-    public List<Resource<{dtoName}>> findAll() throws {Exception}{
+    public List<{dtoName}> findAll() throws {Exception}{
         try{
             return {entityVar}Repository.findAll()
             .stream()
-            .map(e -> new Resource<{dtoName}>({entityVar}Mapper.{entityVar}ToDTO((e)))
+            .map(this::{entityVar}Mapper.map)
             .collect(Collectors.toList());
         }catch(Exception ex){
             logger.error("Not managed error in select transaction");
@@ -138,7 +135,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @return the page obtained from database
     * @throws {Exception} if an error happens in query select
     */
-    public Page<Resource<{dtoName}>> getPaginatedResult(
+    public Page<{dtoName}> getPaginatedResult(
             Integer page,Integer size,String columnToOrder, String orderType
         ) throws {Exception} {
             try {
@@ -152,9 +149,9 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 }
                 PageRequest request = PageRequest.of(page, size, sort);
                 Page<{entityName}> {entityVar}Page = {entityVar}Repository.findAll(request);
-                List<Resource<{dtoName}>> resourcesList = userPage.getContent()
+                List<{dtoName}> resourcesList = userPage.getContent()
                                     .stream()
-                                    .map(e -> new Resource<>({entityVar}Mapper.{entityVar}ToDTO((e)))
+                                    .map(this::{entityVar}Mapper.map)
                                     .collect(Collectors.toList());
                 return new PageImpl<>(resourcesList, request, {entityVar}Page.getTotalElements());
             }catch (Exception ex){

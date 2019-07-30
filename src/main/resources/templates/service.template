@@ -2,7 +2,6 @@ package {basePackage}.{servicePackage};
 
 import {basePackage}.{exceptionPackage}.{Exception};
 import {basePackage}.{dtoPackage}.{dtoName};
-import org.springframework.hateoas.Resource;
 import java.util.List;
 import org.springframework.data.domain.Page;
 /**
@@ -17,27 +16,27 @@ public interface {entityName}Service{
     * @param {dtoVar} the values to be saved
     * @throws {Exception} if an error happens in transaction
     */
-    Resource<{classId}> add{entityName}({dtoName} {dtoVar}) throws {Exception};
+    {dtoName} add{entityName}({dtoName} {dtoVar}) throws {Exception};
 
     /**
     * Method to update values of entity
     * @param {dtoVar} the values to update
     * @throws {Exception} if an error happens in transaction
     */
-    Resource<{classId}> update{entityName}({dtoName} {dtoVar}) throws {Exception} ;
+    {dtoName} update{entityName}({dtoName} {dtoVar}) throws {Exception} ;
 
     /**
     * Get details of {entityName}
     * @param id unique identifier to find object
     * throws {Exception} if an error happens in select transaction
     */
-    Resource<{dtoName}> findById({classId} id) throws {Exception};
+    {dtoName} findById({classId} id) throws {Exception};
 
     /**
     * Get List of all {entityName}
     * throws {Exception} if an error happens in select transaction
     */
-    List<Resource<{dtoName}>> findAll() throws {Exception};
+    List<{dtoName}> findAll() throws {Exception};
 
     /**
     * Get paginated result
@@ -48,7 +47,7 @@ public interface {entityName}Service{
     * @return the page obtained from database
     * @throws {Exception} if an error happens in query select
     */
-    Page<Resource<{dtoName}>> getPaginatedResult(
+    Page<{dtoName}> getPaginatedResult(
         Integer page,Integer size,String columnToOrder, String orderType
     ) throws {Exception} ;
 
