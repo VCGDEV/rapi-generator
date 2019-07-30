@@ -18,7 +18,7 @@ maven {
 and also add dependency 
 
 ```
-   classpath("com.vcgdev.plugin:rapi-generator:1.1")
+   classpath("com.vcgdev.plugin:rapi-generator:1.2")
 ```
 
 you will need to apply the plugin
@@ -39,6 +39,7 @@ genRest{
 	dtoPackage = "views"
         exceptionClass = "BaseException"
         exceptionPackage = "exception"
+        mapperPackage = "mapper"
 }
 ```
 
