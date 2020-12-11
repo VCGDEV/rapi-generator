@@ -2,82 +2,75 @@ package {basePackage}.{resourcePackage};
 
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 import {basePackage}.{exceptionPackage}.{Exception};
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 
+//TODO add swagger annotations
 @RestController()
 @RequestMapping("{mapping}")
-public class {entityName}Resource {
-    private final Logger logger= LoggerFactory.getLogger({entityName}Resource.class);
-
+public class {entityName}Controller {
+    
     private {entityName}Service {entityVar}Service;
 
-    @Autowired
-    public void set{entityName}Service({entityName}Service {entityVar}Service){
-        this.{entityVar}Service = {entityVar}Service;
+    public {entityName}Controller({entityName}Service {entityVar}Service) {
+       this.{entityVar}Service = {entityVar}Service;
     }
 
-    @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<Resource<{dtoName}>> add{entityName}(
+    @PostMapping()
+    // TODO add swagger annotations
+    // TODO add security annotations
+    public HttpEntity<{dtoName}> add{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar}
     ) throws {Exception}{
-        logger.info("Add new {entityName} - {}",{dtoVar});
         {dtoName} dto = this.{entityVar}Service.add{entityName}({dtoVar});
-        Resource<{dtoName}> resource = new Resource(dto);
-        return new ResponseEntity<>(resource,HttpStatus.OK);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
-    @PutMapping(value="{id}",produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<Resource<{dtoName}>> update{entityName}(
+    @PutMapping(value="{id}")
+    // TODO add swagger annotations
+    // TODO add security annotations
+    public HttpEntity<{dtoName}> update{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar},
         @PathVariable {classId} id
-        ) throws {Exception} {
-        logger.info("Update {entityName} {} - ID: {}",{dtoVar},id);
+        ) throws {Exception} {    
         {dtoVar}.setId(id);
-        {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});
-        Resource<{dtoName}> resource = new Resource(dto);
-        return new ResponseEntity<>(resource,HttpStatus.OK);
+        {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});        
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping(value="{id}",produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<Resource<{dtoName}>> findById(@PathVariable {classId} id) throws {Exception}{
-        logger.info("find {entityName} by id: {}",id);
-        Resource<{dtoName}> resource = new Resource(this.{entityVar}Service.findById(id));
-        return new ResponseEntity<>(resource,HttpStatus.OK);
+    @GetMapping(value="{id}")
+    // TODO add swagger annotations
+    // TODO add security annotations
+    public HttpEntity<{dtoName}> findById(@PathVariable {classId} id) throws {Exception}{        
+        return new ResponseEntity<>(this.{entityVar}Service.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity<List<Resource<{dtoName}>>> findAll() throws {Exception}{
-        logger.info("find all {entityName} ");
-        List<Resource<{dtoName}>> resources = this.{entityVar}Service.findAll()
-                                                .parallelStream()
-                                                .map(Resource::new)
-                                                .collect(Collectors.toList());
-        return new ResponseEntity<>(resources,HttpStatus.OK);
+    @GetMapping()
+    // TODO add swagger annotations
+    // TODO add security annotations
+    public HttpEntity<Collection{dtoName}>> findAll() throws {Exception}{        
+        Collection<{dtoName}> dtoList = this.{entityVar}Service.findAll();
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping(value="paginatedResult",produces = MediaTypes.HAL_JSON_VALUE)
+    @GetMapping(value="paginatedResult")
+    // TODO add swagger annotations
+    // TODO add security annotations
     public HttpEntity<Page<{dtoName}>> getPaginatedResult(
             @RequestParam(required = false,defaultValue = "0") Integer page,
             @RequestParam(required = false,defaultValue = "20") Integer size,
             @RequestParam(required = false) String columnToOrder,
             @RequestParam(required = false) String orderType
         ) throws {Exception} {
-        logger.info("Get paginated result - page: {}, columnOrder: {} - orderType: {}",
-                        page,size,columnToOrder,orderType);
         Page<{dtoName}> paginatedResult = this.{entityVar}Service.getPaginatedResult(page,size,columnToOrder,orderType);
-        return new ResponseEntity<>(paginatedResult,HttpStatus.OK);
+        return new ResponseEntity<>(paginatedResult, HttpStatus.OK);
     }
 }
