@@ -14,5 +14,6 @@ import lombok.EqualsAndHashCode;
 @ToString
 @EqualsAndHashCode
 public class {entityName}DTO{
+    //TODO add swagger annotations
 {attributes}
 }

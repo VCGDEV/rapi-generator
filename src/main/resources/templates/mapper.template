@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
         unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE
 )
 public interface {entityName}Mapper {
-    {dtoName} map({entityName} {entityVar});
-    {entityName} map({dtoName} {dtoVar});
+    {dtoName} fromEntity({entityName} {entityVar});
+    {entityName} fromDTO({dtoName} {dtoVar});
 }

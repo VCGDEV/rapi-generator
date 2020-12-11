@@ -2,7 +2,7 @@ package {basePackage}.{servicePackage};
 
 import {basePackage}.{exceptionPackage}.{Exception};
 import {basePackage}.{dtoPackage}.{dtoName};
-import java.util.List;
+import java.util.Collection;
 import org.springframework.data.domain.Page;
 /**
 * Versions 1.0
@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 * Basic CRUD service
 */
 public interface {entityName}Service{
+
+    // TODO add specific message
+    String INTERNAL_ERROR_MESSAGE = "";
 
     /**
     * Method to add new {entityName} in database
@@ -36,7 +39,7 @@ public interface {entityName}Service{
     * Get List of all {entityName}
     * throws {Exception} if an error happens in select transaction
     */
-    List<{dtoName}> findAll() throws {Exception};
+    Collection<{dtoName}> findAll() throws {Exception};
 
     /**
     * Get paginated result

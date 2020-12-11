@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -14,12 +13,14 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import {basePackage}.{servicePackage}.{entityName}Service;
+import {basePackage}.{servicePackage}.ErrorCode; // TODO make this dinamyc
 import {basePackage}.{exceptionPackage}.{Exception};
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{mapperPackage}.{entityName}Mapper;
 import {basePackage}.{repositoryPackage}.{entityName}Repository;
 import {basePackage}.{domainPackage}.{entityName};
 import org.springframework.dao.DataIntegrityViolationException;
+
 /**
 * Versions 1.0
 * Created using Rest API Generator
@@ -55,15 +56,19 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     @Transactional(rollbackFor={Exception}.class)
     public {dtoName} add{entityName}({dtoName} {dtoVar}) throws {Exception}{
         try{
-            {entityName} {entityVar} = {entityVar}Mapper.map({dtoVar});
+            {entityName} {entityVar} = {entityVar}Mapper.fromDTO({dtoVar});
             {entityVar}Repository.save({entityVar});
-            return {entityVar}Mapper.map({entityVar});
+            return {entityVar}Mapper.fromEntity({entityVar});
         }catch(DataIntegrityViolationException dve){
             logger.error("Error in insert transaction",dve);
-            throw new {Exception}("Error in insert transaction",HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new {Exception}(ErrorCode.INTERNAL, //
+               ErrorCode.INTERNAL.getCode().toString(), //
+               INTERNAL_ERROR_MESSAGE);
         }catch(Exception ex){
             logger.error("Not managed error in insert transaction",ex);
-            throw new {Exception}("Internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new {Exception}(ErrorCode.INTERNAL, //
+               ErrorCode.INTERNAL.getCode().toString(), //
+               INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -77,16 +82,20 @@ public class {entityName}ServiceImpl implements {entityName}Service {
         try{
             if(!{entityVar}Repository.existsById({dtoVar}.getId())){
                 logger.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
-                throw new {Exception}("Object does not exist",HttpStatus.NOT_FOUND);
+                throw new {Exception}(ErrorCode.NOT_FOUND, //
+                   ErrorCode.NOT_FOUND.getCode().toString(), //
+                   INTERNAL_ERROR_MESSAGE);
             }
-            {entityName} {entityVar} = {entityVar}Mapper.map({dtoVar});
+            {entityName} {entityVar} = {entityVar}Mapper.fromDTO({dtoVar});
             {entityVar}Repository.save({entityVar});
-            return {entityVar}Mapper.map({entityVar});
+            return {entityVar}Mapper.fromEntity({entityVar});
         }catch({Exception} xe){
             throw xe;
         }catch(Exception ex){
             logger.error("Not managed error in insert transaction",ex);
-            throw new {Exception}("Internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new {Exception}(ErrorCode.INTERNAL, //
+               ErrorCode.INTERNAL.getCode().toString(), //
+               INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -99,14 +108,18 @@ public class {entityName}ServiceImpl implements {entityName}Service {
         try{
             if(!{entityVar}Repository.existsById(id)){
                 logger.error("Entity not exists in database - ID: {}",id);
-                throw new {Exception}("Object does not exist",HttpStatus.NOT_FOUND);
+                throw new {Exception}(ErrorCode.NOT_FOUND, //
+                   ErrorCode.NOT_FOUND.getCode().toString(), //
+                   INTERNAL_ERROR_MESSAGE);
             }
-            return {entityVar}Mapper.map({entityVar}Repository.getOne(id));
+            return {entityVar}Mapper.fromEntity({entityVar}Repository.getOne(id));
         }catch({Exception} excp){
             throw excp;
         }catch(Exception ex){
-            logger.error("Not managed error in select transaction",ex);
-            throw new {Exception}("Internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Not managed error in select transaction", ex);
+            throw new {Exception}(ErrorCode.INTERNAL, //
+               ErrorCode.INTERNAL.getCode().toString(), //
+               INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -114,15 +127,17 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * Get List of all {entityName}
     * throws {Exception} if an error happens in select transaction
     */
-    public List<{dtoName}> findAll() throws {Exception}{
+    public Collection<{dtoName}> findAll() throws {Exception}{
         try{
             return {entityVar}Repository.findAll()
             .stream()
-            .map({entityVar}Mapper::map)
+            .map({entityVar}Mapper::fromEntity)
             .collect(Collectors.toList());
         }catch(Exception ex){
-            logger.error("Not managed error in select transaction");
-                        throw new {Exception}("Internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Not managed error in select transaction", ex);
+            throw new {Exception}(ErrorCode.INTERNAL, //
+               ErrorCode.INTERNAL.getCode().toString(), //
+               INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -151,12 +166,14 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 Page<{entityName}> {entityVar}Page = {entityVar}Repository.findAll(request);
                 List<{dtoName}> resourcesList = userPage.getContent()
                                     .stream()
-                                    .map({entityVar}Mapper::map)
+                                    .map({entityVar}Mapper::fromEntity)
                                     .collect(Collectors.toList());
                 return new PageImpl<>(resourcesList, request, {entityVar}Page.getTotalElements());
             }catch (Exception ex){
                 logger.error("Not managed error in select transaction",ex);
-                throw new BaseException("Internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new {Exception}(ErrorCode.INTERNAL, //
+                    ErrorCode.INTERNAL.getCode().toString(), //
+                    INTERNAL_ERROR_MESSAGE);
             }
     }
 }
