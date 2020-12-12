@@ -173,13 +173,11 @@ class CodeGeneratorUtils {
     }
 
     private List<String> fileNames() {
-        return Arrays.asList(
-                "exception.template",
+        return Arrays.asList(              
                 "repository.template",
                 "service.template",
                 "service-impl.template",
                 "resource.template",
-                "handling.template",
                 "mapper.template"
         );
     }
@@ -225,7 +223,7 @@ class CodeGeneratorUtils {
             fileName = domainName.concat("ServiceImpl.java");
             filePath = filePath.concat("impl/");
         }else if(fileTemplate.contains("resource")){
-            fileName = domainName.concat("Resource.java");
+            fileName = domainName.concat("Controller.java");
             filePath = basePath.concat(resourcePackage.replace(".","/"))
                     .concat("/");
         }else if(fileTemplate.contains("repository")){
