@@ -56,7 +56,7 @@ public class {entityName}Controller {
     @GetMapping()
     // TODO add swagger annotations
     // TODO add security annotations
-    public HttpEntity<Collection{dtoName}>> findAll() throws {Exception}{        
+    public HttpEntity<Collection<{dtoName}>> findAll() throws {Exception}{        
         Collection<{dtoName}> dtoList = this.{entityVar}Service.findAll();
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }

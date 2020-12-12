@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-        maven {
-            url 'http://5.189.184.52:8081/artifactory/plugins-release'
+        //maven {
+            /*url 'http://5.189.184.52:8081/artifactory/plugins-release'
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
-            }
-            name = "maven-main-cache"
-        }
+            } */
+            //name = "maven-main-cache"
+        //}
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -23,11 +23,11 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'signing'
-    id "com.jfrog.artifactory" version "4.9.8"
+    //id "com.jfrog.artifactory" version "4.9.8"
 }
 
 apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
+//apply plugin: "com.jfrog.artifactory"
 group 'com.vcgdev.plugin'
 version '1.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -42,11 +42,18 @@ task javadocJar(type: Jar) {
     classifier = 'javadoc'
 }
 
-repositories {
+/*repositories {
     add buildscript.repositories.getByName("maven-main-cache")
-}
+}*/
 
 publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = "$buildDir/repos/releases"
+            def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'rapi-generator'
@@ -59,7 +66,7 @@ publishing {
     }
     
 }
-
+/*
 artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
@@ -72,7 +79,7 @@ artifactory {
             publications ('mavenJava')
         }
     }
-}
+} */
 
 
 
