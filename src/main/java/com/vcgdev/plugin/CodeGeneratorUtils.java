@@ -133,7 +133,7 @@ class CodeGeneratorUtils {
                 searchId = Boolean.TRUE;
             }
             if(matcher.matches()){
-                attributesContent.append("\t").append(line)
+                attributesContent.append("\t@ApiModelProperty(name = \"\", value = \"\")\n\t").append(line)
                         .append("\n");
                 String []attributeParts =line.split(" ");//private Class id;
                 String attributeName = attributeParts[2].replace(";","");
@@ -145,7 +145,8 @@ class CodeGeneratorUtils {
             }
             if(line.contains("import") &&
                     !line.contains("javax.persistence")&&
-                    !line.contains("lombok")){
+                    !line.contains("lombok") && 
+                    !line.contains("swagger")){
                 importContent.append(line);//imports
             }
 

@@ -1,5 +1,8 @@
 package {basePackage}.{dtoPackage};
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +16,8 @@ import lombok.EqualsAndHashCode;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@ApiModel(description = "") // TODO update swagger
 public class {entityName}DTO{
-    //TODO add swagger annotations
+    //TODO update swagger annotations
 {attributes}
 }
