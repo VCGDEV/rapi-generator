@@ -33,6 +33,8 @@ class CodeGeneratorUtils {
 
     private static final String JAVA_SOURCE_PATH = "src/main/java/";
 
+    private static final String JAVA_TEST_PATH = "src/test/java";
+
     private String basePackage;
     private String dtoPackage;
     private String repositoryPackage;
@@ -171,6 +173,14 @@ class CodeGeneratorUtils {
         fileNames().parallelStream()
                 .forEach(fileName -> generateFile(fileName, domainName));
 
+        createTest(domainName);
+
+    }
+
+    void createTest(String domainName) throws IOException {
+        List<String> testTemplates = Arrays.asList("controller-test.template", "service-test.template");
+        testTemplates.parallelStream()
+           .forEach(fileName -> generateTestFile(fileName, domainName));
     }
 
     private List<String> fileNames() {
@@ -211,6 +221,30 @@ class CodeGeneratorUtils {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write(content);
         writer.close();
+    }
+
+    private void generateTestFile(String fileTemplate,String domainName) {
+        String fileName = "";
+        String basePath = JAVA_TEST_PATH.concat(basePackage.replace(".", "/")).concat("/");
+        String filePath = "";
+        if(fileTemplate.contains("controller")) {
+            fileName = domainName.concat("ControllerTest.java");
+            filePath = basePath.concat(resourcePackage.replace(".", "/"));
+        } else {
+            fileName = domainName.concat("ServiceTest.java");
+            filePath = basePath.concat(servicePackage.replace(".", "/"));
+        }
+        File fileToGenerate = new File(filePath.concat(fileName));
+        if(!fileToGenerate.exists()){
+            try {
+                String fileContent = readFileTemplate(fileTemplate,domainName);
+                writeFile(fileToGenerate, filePath, fileContent);
+            }catch (IOException io) {
+                throw new RuntimeException(String.format("Could not generate file, from template %s", fileTemplate));
+            }
+        }else{
+            logger.info("File: {} already exists",fileName);
+        }
     }
 
     private void generateFile(String fileTemplate,String domainName) {
