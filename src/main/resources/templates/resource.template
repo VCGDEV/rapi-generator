@@ -52,7 +52,7 @@ public class {entityName}Controller {
         @RequestBody @Validated {dtoName} {dtoVar}
     ) throws {Exception}{
         {dtoName} dto = this.{entityVar}Service.add{entityName}({dtoVar});
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        return new ResponseEntity<>(dto,HttpStatus.CREATED);
     }
 
     @PutMapping(value="{id}")
