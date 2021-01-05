@@ -44,7 +44,7 @@ public class {entityName}ControllerTest {
 
     @BeforeEach
     public void setup() {
-
+        expectedDTO = mockDTO();
     }
 
     private {dtoName} mockDTO() {
@@ -55,12 +55,12 @@ public class {entityName}ControllerTest {
     }
 
     @Test
-    public void add{entityName}_successTRansaction_responseCreated() throws Exception {
+    public void add{entityName}_successTransaction_responseCreated() throws Exception {
         {dtoName} resultFromService = mockDTO();
         
         when(service.add{entityName}(any({dtoName}.class)))
            .thenReturn(resultFromService);
-        ResponseEntity<{entityName}> responseResult = (ResponseEntity)controller.add{entityName}(expectedDTO);
+        ResponseEntity<{dtoName}> responseResult = (ResponseEntity)controller.add{entityName}(expectedDTO);
 
         assertNotNull(responseResult);
         assertEquals(HttpStatus.CREATED, responseResult.getStatusCode());
