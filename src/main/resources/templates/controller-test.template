@@ -1,0 +1,142 @@
+package {basePackage}.{resourcePackage};
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import {basePackage}.{dtoPackage}.{dtoName};
+import {basePackage}.{servicePackage}.{entityName}Service;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("{entityName} REST Testing")
+public class {entityName}ControllerTest {
+
+    @Mock
+    private {entityName}Service service;
+
+    @InjectMocks
+    private {entityName}Controller controller;
+
+    private {dtoName} expectedDTO;
+
+    // TODO change id class type
+    private String expectedId = "test-id";
+
+    @BeforeEach
+    public void setup() {
+
+    }
+
+    private {dtoName} mockDTO() {
+        {dtoName} dto = new {dtoName}();
+        dto.setId(expectedId);
+        // TODO add properties
+        return dto;
+    }
+
+    @Test
+    public void add{entityName}_successTRansaction_responseCreated() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        
+        when(service.add{entityName}(any({dtoName}.class)))
+           .thenReturn(resultFromService);
+        ResponseEntity<{entityName}> responseResult = (ResponseEntity)controller.add{entityName}(expectedDTO);
+
+        assertNotNull(responseResult);
+        assertEquals(HttpStatus.CREATED, responseResult.getStatusCode());
+        assertNotNull(responseResult.getBody());
+
+        {dtoName} resultDTO = responseResult.getBody();
+        assertEquals(expectedId, resultDTO.getId());
+        // TODO assert all properties of DTO
+    }
+
+     @Test
+    public void update{entityName}_sucessTransaction_responseOK() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+
+        when(service.update{entityName}(any({dtoName}.class)))
+           .thenReturn(resultFromService);
+        ResponseEntity<{dtoName}> responseResult = (ResponseEntity)controller.update{entityName}(expectedDTO, expectedId);
+
+        assertNotNull(responseResult);
+        assertEquals(HttpStatus.OK, responseResult.getStatusCode());
+        assertNotNull(responseResult.getBody());
+
+        {dtoName} resultDTO = responseResult.getBody();
+        assertEquals(resultDTO.getId(), expectedId);
+    }
+
+    @Test
+    public void findById_serviceReturnsElement_responseOK() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        when(service.findById(eq(expectedId)))
+            .thenReturn(resultFromService);
+
+        ResponseEntity<{dtoName}> responseResult = (ResponseEntity)controller.findById(expectedId);
+
+        assertNotNull(responseResult);
+        assertEquals(HttpStatus.OK, responseResult.getStatusCode());
+        assertNotNull(responseResult.getBody());
+
+        {dtoName} resultDTO = responseResult.getBody();
+        assertEquals(resultDTO.getId(), expectedId);
+        // TODO match all properties from DTO      
+    }
+
+    @Test
+    public void findAll_serviceReturnsCollection_responseOK() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        when(service.findAll())
+            .thenReturn(Collections.singletonList(resultFromService));
+
+        ResponseEntity<Collection<{dtoName}>>   responseResult = (ResponseEntity)controller.findAll();
+
+        assertNotNull(responseResult);
+        assertEquals(HttpStatus.OK, responseResult.getStatusCode());
+        assertNotNull(responseResult.getBody());
+
+        Collection<{dtoName}> collectionResult = responseResult.getBody();
+        assertFalse(collectionResult.isEmpty());
+
+        //TODO iterate over collection and match properties
+    }
+
+    @Test
+    public void getPaginatedResult_serviceReturnsPage_responseOK() throws Exception {
+        when(service.getPaginatedResult(eq(0), eq(10), eq("id"), eq("asc")))
+            .thenReturn(new PageImpl(Collections.singletonList(expectedDTO), PageRequest.of(0, 10), 10));
+        
+        ResponseEntity<Page<{dtoName}>> responseResult = (ResponseEntity)controller.getPaginatedResult(0, 10, "id", "asc");
+        
+        assertNotNull(responseResult);
+        assertEquals(HttpStatus.OK, responseResult.getStatusCode());
+        assertNotNull(responseResult.getBody());
+
+        Page<{dtoName}> paginatedResult = responseResult.getBody();
+        assertEquals(1, paginatedResult.getContent().size());
+        // TODO match DTO properties
+    }
+
+
+}
