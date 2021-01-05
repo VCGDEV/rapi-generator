@@ -33,7 +33,7 @@ class CodeGeneratorUtils {
 
     private static final String JAVA_SOURCE_PATH = "src/main/java/";
 
-    private static final String JAVA_TEST_PATH = "src/test/java";
+    private static final String JAVA_TEST_PATH = "src/test/java/";
 
     private String basePackage;
     private String dtoPackage;
@@ -229,17 +229,20 @@ class CodeGeneratorUtils {
         String filePath = "";
         if(fileTemplate.contains("controller")) {
             fileName = domainName.concat("ControllerTest.java");
-            filePath = basePath.concat(resourcePackage.replace(".", "/"));
+            filePath = basePath.concat(resourcePackage.replace(".", "/")).concat("/");
         } else {
             fileName = domainName.concat("ServiceTest.java");
-            filePath = basePath.concat(servicePackage.replace(".", "/"));
+            filePath = basePath.concat(servicePackage.replace(".", "/")).concat("/");
         }
         File fileToGenerate = new File(filePath.concat(fileName));
         if(!fileToGenerate.exists()){
             try {
+                logger.info("Genrate file: {}", fileName);
+                logger.info("Creating file on path: {}", filePath);
                 String fileContent = readFileTemplate(fileTemplate,domainName);
                 writeFile(fileToGenerate, filePath, fileContent);
             }catch (IOException io) {
+                logger.error("unable to crete file", io);
                 throw new RuntimeException(String.format("Could not generate file, from template %s", fileTemplate));
             }
         }else{
