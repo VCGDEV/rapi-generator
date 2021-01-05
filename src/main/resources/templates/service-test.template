@@ -1,0 +1,282 @@
+package {basePackage}.{servicePackage};
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import {basePackage}.{servicePackage}.impl.{entityName}ServiceImpl;
+import {basePackage}.{exceptionPackage}.{Exception};
+import {basePackage}.{dtoPackage}.{dtoName};
+import {basePackage}.{mapperPackage}.{entityName}Mapper;
+import {basePackage}.{repositoryPackage}.{entityName}Repository;
+import {basePackage}.{domainPackage}.{entityName};
+
+import org.mapstruct.factory.Mappers;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mock;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+
+import java.util.Collection;
+import java.util.Collections;
+
+@DisplayName("") // TODO update display name
+@ExtendWith(MockitoExtension.class)
+public class {entityName}ServiceTest {
+
+    @Mock
+    private {entityName}Repository repository;
+
+    private {entityName}Mapper mapper = Mappers.getMapper({entityName}Mapper.class);
+
+    private {entityName}ServiceImpl service;
+
+    private {entityName} entity;
+
+    private {dtoName} {dtoVar};
+
+    String id = "test-id";
+
+    @BeforeEach
+    public void setup() {
+        // TODO set properties
+        entity = new {entityName}();
+        entity.setId(id);
+        // TODO set propertiers
+        {dtoVar} = new {dtoName}();
+        {dtoVar}.setId(id);
+        service = new {entityName}ServiceImpl(repository, mapper);
+    }
+
+    @Test
+    public void add{entityName}_successTransaction() throws Exception {
+        {dtoName} dto = service.add{entityName}({dtoVar});
+        assertNotNull(dto);
+        // TODO assert properties
+    }
+
+
+    @Test
+    public void add{entityName}_dataIntegrityExceptionIsThrown_customExceptionShouldBeThrown () throws Exception {
+        when(repository.save(any({entityName}.class)))
+            .thenThrow(new DataIntegrityViolationException("Integrity violation"));
+        
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.add{entityName}({dtoVar});
+        });
+        assertEquals(ErrorCode.INTERNAL, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+
+        verify(repository).save(any({entityName}.class));
+    }
+
+    @Test
+    public void add{entityName}_notManagedExceptionIsThrown_customExceptionShouldBeThrown () throws Exception {
+        when(repository.save(any({entityName}.class)))
+            .thenThrow(new RuntimeException("Not managed exception"));
+        
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.add{entityName}({dtoVar});
+        });
+        assertEquals(ErrorCode.INTERNAL, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+
+        verify(repository).save(any({entityName}.class));
+    }
+
+    @Test
+    public void update{entityName}_notExistingEntity_customExceptionShouldBeThrown() throws Exception {
+        when(repository.existsById(eq(id)))
+           .thenReturn(Boolean.FALSE);
+
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.update{entityName}({dtoVar});
+        });
+        assertEquals(ErrorCode.NOT_FOUND, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+
+        verify(repository).existsById(eq(id));
+
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void update{entityName}_entityExistsInDB_successTransaction() throws Exception {
+        when(repository.existsById(eq(id)))
+           .thenReturn(Boolean.TRUE);
+
+        {entityName}DTO dto = service.update{entityName}({dtoVar});
+
+        assertNotNull(dto);
+        assertEquals(id, dto.getId());
+        //TODO assert properties
+
+        verify(repository).existsById(eq(id));
+
+        verify(repository).save(any({entityName}.class));
+    }
+
+    @Test
+    public void update{entityName}_errorFetchingFromDB_customExceptionShouldBeThrown() throws Exception {
+        when(repository.existsById(eq(id)))
+           .thenThrow(new RuntimeException("Not managed exception"));
+
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.update{entityName}({dtoVar});
+        });
+
+        assertEquals(ErrorCode.INTERNAL, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+
+        verify(repository).existsById(eq(id));
+
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void findById_entityNotExists_customExceptionShouldBeThrown() throws Exception {
+        when(repository.existsById(eq(id)))
+           .thenReturn(Boolean.FALSE);
+
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.findById(id);
+        });
+        assertEquals(ErrorCode.NOT_FOUND, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+
+        verify(repository).existsById(eq(id));
+
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void findById_errorFromDB_customExceptionShouldBeThrown() throws Exception {
+        when(repository.existsById(eq(id)))
+           .thenThrow(new RuntimeException("Not managed error"));
+
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.findById(id);
+        });
+        assertEquals(ErrorCode.INTERNAL, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+
+        verify(repository).existsById(eq(id));
+
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void findById_entityIsInDB_DTOIsReturned() throws Exception {
+        when(repository.existsById(eq(id)))
+            .thenReturn(Boolean.TRUE);
+
+        when(repository.getOne(eq(id)))
+            .thenReturn(entity);
+
+        {entityName}DTO dto = service.findById(id);
+
+        assertNotNull(dto);
+        assertEquals(id, dto.getId());
+        // TODO assert properties
+
+        verify(repository).existsById(eq(id));
+
+        verify(repository).getOne(eq(id));
+    }
+
+    @Test
+    public void findAll_exceptionIsThrown_customExceptionShouldBeThrown() throws Exception {
+
+        when(repository.findAll())
+            .thenThrow(new RuntimeException("Invalid transaction"));
+
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            service.findAll();
+        });
+
+        assertEquals(ErrorCode.INTERNAL, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+    }
+
+    @Test
+    public void findAll_successTransaction_dtoListIsReturned() throws Exception {
+        when(repository.findAll())
+            .thenReturn(Collections.singletonList(entity));
+
+        Collection<{entityName}DTO> dtoList = service.findAll();
+        assertEquals(1, dtoList.size());
+    }
+
+    @Test
+    public void getPaginatedResult_noParametersProvided_pageIsReturned () throws Exception {
+        when(repository.findAll(any(PageRequest.class)))
+            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
+        
+        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, null, null);
+
+        assertNotNull(dtoPage);
+        assertEquals(1, dtoPage.getContent().size());
+    }
+
+    @Test
+    public void getPaginatedResult_ascSortAndColumnProvided_pageIsReturned () throws Exception {
+        when(repository.findAll(any(PageRequest.class)))
+            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
+        
+        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(1, 10, "id", "asc");
+
+        assertNotNull(dtoPage);
+        assertEquals(1, dtoPage.getContent().size());
+    }
+
+    @Test
+    public void getPaginatedResult_descSortAndColumnProvided_pageIsReturned () throws Exception {
+        when(repository.findAll(any(PageRequest.class)))
+            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
+        
+        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "id", "desc");
+
+        assertNotNull(dtoPage);
+        assertEquals(1, dtoPage.getContent().size());
+    }
+
+    @Test
+    public void getPaginatedResult_invalidParametersProvided_customExceptionIsThrown () throws Exception {        
+        {Exception} cte = assertThrows({Exception}.class, () -> {
+            Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "invalidColumn", "invalidOrder");
+        });
+        
+
+        assertEquals(ErrorCode.INTERNAL, cte.getCode());
+        assertFalse(cte.getErrors().isEmpty());
+        verifyZeroInteractions(repository);
+    }
+
+    @Test
+    public void getPaginatedResult_orderIsNull_defaultSortIsReturned () throws Exception {
+        when(repository.findAll(any(PageRequest.class)))
+            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
+        
+        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "is", null);
+
+        assertNotNull(dtoPage);
+        assertEquals(1, dtoPage.getContent().size());
+    }
+
+}
