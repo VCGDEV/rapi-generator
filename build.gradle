@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-        //maven {
-            /*url 'http://5.189.184.52:8081/artifactory/plugins-release'
+        maven {
+            url 'https://vsatdev.jfrog.io/artifactory/plugins-release'
             credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            } */
-            //name = "maven-main-cache"
-        //}
+                username System.getenv("artifactory_user")
+                password System.getenv("artifactory_password")
+            }
+            name = "maven-main-cache"
+        }
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -23,11 +23,11 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'signing'
-    //id "com.jfrog.artifactory" version "4.9.8"
+    id "com.jfrog.artifactory" version "4.9.8"
 }
 
 apply plugin: 'maven-publish'
-//apply plugin: "com.jfrog.artifactory"
+apply plugin: "com.jfrog.artifactory"
 group 'com.vcgdev.plugin'
 version '1.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -42,9 +42,9 @@ task javadocJar(type: Jar) {
     classifier = 'javadoc'
 }
 
-/*repositories {
+repositories {
     add buildscript.repositories.getByName("maven-main-cache")
-}*/
+}
 
 publishing {
     repositories {
@@ -66,20 +66,21 @@ publishing {
     }
     
 }
-/*
+
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"
+    contextUrl = "https://vsatdev.jfrog.io/artifactory"
     publish {
-        repository {
-            repoKey = 'libs-snapshot-local'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
+        repository {            
+            repoKey = 'gradle-dev-local'
+            username = System.getenv("artifactory_user")
+            password = System.getenv("artifactory_password")
+            maven = true
         }
         defaults {
             publications ('mavenJava')
         }
     }
-} */
+} 
 
 
 
