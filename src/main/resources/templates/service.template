@@ -1,6 +1,6 @@
 package {basePackage}.{servicePackage};
 
-import {basePackage}.{exceptionPackage}.{Exception};
+import com.vcgdev.common.exception.ServiceException;
 import {basePackage}.{dtoPackage}.{dtoName};
 import java.util.Collection;
 import org.springframework.data.domain.Page;
@@ -17,29 +17,29 @@ public interface {entityName}Service{
     /**
     * Method to add new {entityName} in database
     * @param {dtoVar} the values to be saved
-    * @throws {Exception} if an error happens in transaction
+    * @throws ServiceException if an error happens in transaction
     */
-    {dtoName} add{entityName}({dtoName} {dtoVar}) throws {Exception};
+    {dtoName} add{entityName}({dtoName} {dtoVar}) throws ServiceException;
 
     /**
     * Method to update values of entity
     * @param {dtoVar} the values to update
-    * @throws {Exception} if an error happens in transaction
+    * @throws ServiceException if an error happens in transaction
     */
-    {dtoName} update{entityName}({dtoName} {dtoVar}) throws {Exception} ;
+    {dtoName} update{entityName}({dtoName} {dtoVar}) throws ServiceException ;
 
     /**
     * Get details of {entityName}
     * @param id unique identifier to find object
-    * throws {Exception} if an error happens in select transaction
+    * throws ServiceException if an error happens in select transaction
     */
-    {dtoName} findById({classId} id) throws {Exception};
+    {dtoName} findById({classId} id) throws ServiceException;
 
     /**
     * Get List of all {entityName}
-    * throws {Exception} if an error happens in select transaction
+    * throws ServiceException if an error happens in select transaction
     */
-    Collection<{dtoName}> findAll() throws {Exception};
+    Collection<{dtoName}> findAll() throws ServiceException;
 
     /**
     * Get paginated result
@@ -48,10 +48,10 @@ public interface {entityName}Service{
     * @param columnToOrder -> The column to sort result
     * @param orderType -> values {'DESC','ASC'}
     * @return the page obtained from database
-    * @throws {Exception} if an error happens in query select
+    * @throws ServiceException if an error happens in query select
     */
     Page<{dtoName}> getPaginatedResult(
         Integer page,Integer size,String columnToOrder, String orderType
-    ) throws {Exception} ;
+    ) throws ServiceException ;
 
 }

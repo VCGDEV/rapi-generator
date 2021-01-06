@@ -12,8 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.vcgdev.common.exception.ServiceException;
+import com.vcgdev.common.exception.ErrorCode;
 import {basePackage}.{servicePackage}.impl.{entityName}ServiceImpl;
-import {basePackage}.{exceptionPackage}.{Exception};
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{mapperPackage}.{entityName}Mapper;
 import {basePackage}.{repositoryPackage}.{entityName}Repository;
@@ -77,7 +78,7 @@ public class {entityName}ServiceTest {
         when(repository.save(any({entityName}.class)))
             .thenThrow(new DataIntegrityViolationException("Integrity violation"));
         
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.add{entityName}({dtoVar});
         });
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
@@ -91,7 +92,7 @@ public class {entityName}ServiceTest {
         when(repository.save(any({entityName}.class)))
             .thenThrow(new RuntimeException("Not managed exception"));
         
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.add{entityName}({dtoVar});
         });
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
@@ -105,7 +106,7 @@ public class {entityName}ServiceTest {
         when(repository.existsById(eq(id)))
            .thenReturn(Boolean.FALSE);
 
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.update{entityName}({dtoVar});
         });
         assertEquals(ErrorCode.NOT_FOUND, cte.getCode());
@@ -137,7 +138,7 @@ public class {entityName}ServiceTest {
         when(repository.existsById(eq(id)))
            .thenThrow(new RuntimeException("Not managed exception"));
 
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.update{entityName}({dtoVar});
         });
 
@@ -154,7 +155,7 @@ public class {entityName}ServiceTest {
         when(repository.existsById(eq(id)))
            .thenReturn(Boolean.FALSE);
 
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.findById(id);
         });
         assertEquals(ErrorCode.NOT_FOUND, cte.getCode());
@@ -170,7 +171,7 @@ public class {entityName}ServiceTest {
         when(repository.existsById(eq(id)))
            .thenThrow(new RuntimeException("Not managed error"));
 
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.findById(id);
         });
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
@@ -206,7 +207,7 @@ public class {entityName}ServiceTest {
         when(repository.findAll())
             .thenThrow(new RuntimeException("Invalid transaction"));
 
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             service.findAll();
         });
 
@@ -258,7 +259,7 @@ public class {entityName}ServiceTest {
 
     @Test
     public void getPaginatedResult_invalidParametersProvided_customExceptionIsThrown () throws Exception {        
-        {Exception} cte = assertThrows({Exception}.class, () -> {
+        ServiceException cte = assertThrows(ServiceException.class, () -> {
             Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "invalidColumn", "invalidOrder");
         });
         

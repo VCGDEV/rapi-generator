@@ -17,7 +17,6 @@ class CodeGeneratorUtils {
     private static final String  BASE_PACKAGE = "{basePackage}";
     private static final String DTO_PACKAGE = "{dtoPackage}";
     private static final String REPOSITORY_PACKAGE = "{repositoryPackage}";
-    private static final String EXCEPTION_PACKAGE = "{exceptionPackage}";
     private static final String SERVICE_PACKAGE = "{servicePackage}";
     private static final String ENTITY_PACKAGE = "{domainPackage}";
     private static final String RESOURCE_PACKAGE = "{resourcePackage}";
@@ -29,7 +28,6 @@ class CodeGeneratorUtils {
     private static final String DTO_NAME = "{dtoName}";
     private static final String DTO_VAR= "{dtoVar}";
     private static final String CLASS_ID = "{classId}";
-    private static final String EXCEPTION_CLASS = "{Exception}";
 
     private static final String JAVA_SOURCE_PATH = "src/main/java/";
 
@@ -38,7 +36,6 @@ class CodeGeneratorUtils {
     private String basePackage;
     private String dtoPackage;
     private String repositoryPackage;
-    private String exceptionPackage;
     private String servicePackage;
     private String entityPackage;
     private String exceptionClass;
@@ -46,17 +43,14 @@ class CodeGeneratorUtils {
     private String resourcePackage;
     private String mapperPackage;
     private List<String> attributeNames = new ArrayList<>();
-    CodeGeneratorUtils(String basePackage, String dtoPackage, String repositoryPackage, String exceptionPackage,
-                              String servicePackage, String entityPackage,
-                       String exceptionClass,String resourcePackage,
+    CodeGeneratorUtils(String basePackage, String dtoPackage, String repositoryPackage,
+                              String servicePackage, String entityPackage,String resourcePackage,
                        String mapperPackage) {
         this.basePackage = basePackage;
         this.dtoPackage = dtoPackage;
         this.repositoryPackage = repositoryPackage;
-        this.exceptionPackage = exceptionPackage;
         this.servicePackage = servicePackage;
         this.entityPackage = entityPackage;
-        this.exceptionClass = exceptionClass;
         this.resourcePackage = resourcePackage;
         this.mapperPackage = mapperPackage;
     }
@@ -94,10 +88,8 @@ class CodeGeneratorUtils {
         templateString = templateString.replace(BASE_PACKAGE,this.basePackage)
                 .replace(DTO_PACKAGE,this.dtoPackage)
                 .replace(REPOSITORY_PACKAGE,this.repositoryPackage)
-                .replace(EXCEPTION_PACKAGE,this.exceptionPackage)
                 .replace(SERVICE_PACKAGE,this.servicePackage)
                 .replace(ENTITY_PACKAGE,this.entityPackage)
-                .replace(EXCEPTION_CLASS,this.exceptionClass)
                 .replace(ENTITY_NAME,domainName)
                 .replace(DTO_VAR,dtoVar)
                 .replace(ENTITY_VAR,entityVar)
@@ -268,10 +260,6 @@ class CodeGeneratorUtils {
             filePath = basePath.concat(repositoryPackage.replace(".","/"))
                     .concat("/");
             fileName = domainName.concat("Repository.java");
-        }else if(fileTemplate.contains("exception")){
-            filePath = basePath.concat(exceptionPackage.replace(".","/"))
-                    .concat("/");
-            fileName = exceptionClass.concat(".java");
         }else if(fileTemplate.contains("handling")){
             fileName = "ExceptionHandling.java";
             filePath = basePath.concat(resourcePackage.replace(".","/"))

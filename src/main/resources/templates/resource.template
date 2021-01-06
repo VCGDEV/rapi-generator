@@ -2,7 +2,7 @@ package {basePackage}.{resourcePackage};
 
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
-import {basePackage}.{exceptionPackage}.{Exception};
+import com.vcgdev.common.exception.ServiceException;
 
 import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +50,7 @@ public class {entityName}Controller {
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<{dtoName}> add{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar}
-    ) throws {Exception}{
+    ) throws ServiceException {
         {dtoName} dto = this.{entityVar}Service.add{entityName}({dtoVar});
         return new ResponseEntity<>(dto,HttpStatus.CREATED);
     }
@@ -68,7 +68,7 @@ public class {entityName}Controller {
     public HttpEntity<{dtoName}> update{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar},
         @PathVariable {classId} id
-        ) throws {Exception} {    
+        ) throws ServiceException {    
         {dtoVar}.setId(id);
         {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});        
         return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -85,7 +85,7 @@ public class {entityName}Controller {
     })
     @ApiOperation(value = "", httpMethod = "GET", response = {dtoName}.class)
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<{dtoName}> findById(@PathVariable {classId} id) throws {Exception}{        
+    public HttpEntity<{dtoName}> findById(@PathVariable {classId} id) throws ServiceException {        
         return new ResponseEntity<>(this.{entityVar}Service.findById(id), HttpStatus.OK);
     }
 
@@ -99,7 +99,7 @@ public class {entityName}Controller {
         @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = "Not authorized")
     })
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<Collection<{dtoName}>> findAll() throws {Exception}{        
+    public HttpEntity<Collection<{dtoName}>> findAll() throws ServiceException {        
         Collection<{dtoName}> dtoList = this.{entityVar}Service.findAll();
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
@@ -119,7 +119,7 @@ public class {entityName}Controller {
             @RequestParam(required = false,defaultValue = "20") Integer size,
             @RequestParam(required = false) String columnToOrder,
             @RequestParam(required = false) String orderType
-        ) throws {Exception} {
+        ) throws ServiceException {
         Page<{dtoName}> paginatedResult = this.{entityVar}Service.getPaginatedResult(page,size,columnToOrder,orderType);
         return new ResponseEntity<>(paginatedResult, HttpStatus.OK);
     }
