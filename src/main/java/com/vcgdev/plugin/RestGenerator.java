@@ -17,8 +17,6 @@ public class RestGenerator extends DefaultTask {
     private String resourcePackage;
     private String entityName;
     private String repositoryPackage;
-    private String exceptionClass;
-    private String exceptionPackage;
     private String mapperPackage;
     private CodeGeneratorUtils codeGeneratorUtils;
     public String getBasePackage() {
@@ -77,22 +75,6 @@ public class RestGenerator extends DefaultTask {
         this.repositoryPackage = repositoryPackage;
     }
 
-    public String getExceptionClass() {
-        return exceptionClass;
-    }
-
-    public void setExceptionClass(String exceptionClass) {
-        this.exceptionClass = exceptionClass;
-    }
-
-    public String getExceptionPackage() {
-        return exceptionPackage;
-    }
-
-    public void setExceptionPackage(String exceptionPackage) {
-        this.exceptionPackage = exceptionPackage;
-    }
-
     public String getMapperPackage() {
         return mapperPackage;
     }
@@ -116,12 +98,10 @@ public class RestGenerator extends DefaultTask {
         if(null == entityPackage || entityPackage.trim().isEmpty())
             throw new IllegalArgumentException("Entity package must not be empty or null");
         if(null == entityName || entityName.trim().isEmpty())
-            throw new IllegalArgumentException("You must provide the entity name");
-        if(null == exceptionClass)
-            throw new IllegalArgumentException("You must provide the exception class");
+            throw new IllegalArgumentException("You must provide the entity name");        
         logger.info("Generate resources for: {}",entityName);
         codeGeneratorUtils = new CodeGeneratorUtils(basePackage,dtoPackage,
-                repositoryPackage,exceptionPackage,servicePackage,entityPackage,exceptionClass
+                repositoryPackage,servicePackage,entityPackage
         ,resourcePackage, mapperPackage);
         codeGeneratorUtils.createDomainStructure(entityName);
     }
