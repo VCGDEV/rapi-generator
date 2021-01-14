@@ -3,6 +3,7 @@ package {basePackage}.{resourcePackage};
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
 import com.vcgdev.common.exception.ServiceException;
+import com.vcgdev.common.swagger.SwaggerConstants;
 
 import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController()
 @RequestMapping("{mapping}")
-@Api(produces = "", tags = {}) // TODO add api tags
+@Api(produces = SwaggerConstants.APPLICATION_JSON_RESPONSE, tags = {}) // TODO add api tags
 public class {entityName}Controller {
     
     private {entityName}Service {entityVar}Service;
@@ -38,15 +39,15 @@ public class {entityName}Controller {
        this.{entityVar}Service = {entityVar}Service;
     }
 
-    @PostMapping()
-    // TODO update swagger annotations
+    @ApiOperation(value = "Create new {entityName}", httpMethod = SwaggerConstants.HTTP_POST, response = {dtoName}.class )
     @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_CREATED, message = "Created", response = {dtoName}.class),
-        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request"),
-        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Internal error"),
-        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = "Acces denied"),
-        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = "Not authorized")
+        @ApiResponse(code = HttpServletResponse.SC_CREATED, message = SwaggerConstants.CREATED_MESSAGE, response = {dtoName}.class),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = SwaggerConstants.BAD_REQUEST_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = SwaggerConstants.INTERNAL_SERVER_ERROR_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
     })
+    @PostMapping()
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<{dtoName}> add{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar}
@@ -55,15 +56,16 @@ public class {entityName}Controller {
         return new ResponseEntity<>(dto,HttpStatus.CREATED);
     }
 
-    @PutMapping(value="{id}")
-    // TODO add swagger annotations
+    
+    @ApiOperation(value = "Update {entityName}", httpMethod = SwaggerConstants.HTTP_PUT, response = {dtoName}.class )
     @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Success", response = {dtoName}.class),
-        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request"),
-        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Internal error"),
-        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = "Acces denied"),
-        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = "Not authorized")
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = SwaggerConstants.OK_MESSAGE, response = {dtoName}.class),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = SwaggerConstants.BAD_REQUEST_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = SwaggerConstants.INTERNAL_SERVER_ERROR_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
     })
+    @PutMapping(value="{id}")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<{dtoName}> update{entityName}(
         @RequestBody @Validated {dtoName} {dtoVar},
@@ -74,45 +76,47 @@ public class {entityName}Controller {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping(value="{id}")
-    // TODO update swagger annotations
+    
+    @ApiOperation(value = "Fetch {entityName} by Id", httpMethod = SwaggerConstants.HTTP_GET, response = {dtoName}.class)
     @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Success", response = {dtoName}.class),
-        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request"),
-        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Internal error"),
-        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = "Acces denied"),
-        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = "Not authorized")
-    })
-    @ApiOperation(value = "", httpMethod = "GET", response = {dtoName}.class)
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = SwaggerConstants.OK_MESSAGE, response = {dtoName}.class),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = SwaggerConstants.BAD_REQUEST_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = SwaggerConstants.INTERNAL_SERVER_ERROR_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
+    })    
+    @GetMapping(value="{id}")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<{dtoName}> findById(@PathVariable {classId} id) throws ServiceException {        
         return new ResponseEntity<>(this.{entityVar}Service.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping()
-    // TODO update swagger annotations
+    
+    @ApiOperation(value = "Fetch list of {entityName}", httpMethod = SwaggerConstants.HTTP_GET, response = Collection.class)
     @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Success", response = {dtoName}.class),
-        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request"),
-        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Internal error"),
-        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = "Acces denied"),
-        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = "Not authorized")
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = SwaggerConstants.OK_MESSAGE, response = Collection.class),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = SwaggerConstants.BAD_REQUEST_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = SwaggerConstants.INTERNAL_SERVER_ERROR_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
     })
+    @GetMapping()
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<Collection<{dtoName}>> findAll() throws ServiceException {        
         Collection<{dtoName}> dtoList = this.{entityVar}Service.findAll();
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping(value="paginatedResult")
-    // TODO update swagger annotations
+    
+    @ApiOperation(value = "Fetch paginated result of {entityName}", httpMethod = SwaggerConstants.HTTP_GET, response = Page.class)
     @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Success", response = {dtoName}.class),
-        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request"),
-        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Internal error"),
-        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = "Acces denied"),
-        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = "Not authorized")
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = SwaggerConstants.OK_MESSAGE, response = Page.class),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = SwaggerConstants.BAD_REQUEST_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = SwaggerConstants.INTERNAL_SERVER_ERROR_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
     })
+    @GetMapping(value="paginatedResult")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<Page<{dtoName}>> getPaginatedResult(
             @RequestParam(required = false,defaultValue = "0") Integer page,
