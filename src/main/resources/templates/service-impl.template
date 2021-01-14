@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import {basePackage}.{servicePackage}.{entityName}Service;
 import com.vcgdev.common.exception.ErrorCode; 
 import com.vcgdev.common.exception.ServiceException;
+import com.vcgdev.common.service.ServiceExceptionMessages;
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{mapperPackage}.{entityName}Mapper;
 import {basePackage}.{repositoryPackage}.{entityName}Repository;
@@ -63,12 +64,12 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             logger.error("Error in insert transaction",dve);
             throw new ServiceException(ErrorCode.INTERNAL, //
                ErrorCode.INTERNAL.getCode().toString(), //
-               INTERNAL_ERROR_MESSAGE);
+               ServiceExceptionMessages.DATA_INSERT_INTEGRITY_MESSAGE);
         }catch(Exception ex){
             logger.error("Not managed error in insert transaction",ex);
             throw new ServiceException(ErrorCode.INTERNAL, //
                ErrorCode.INTERNAL.getCode().toString(), //
-               INTERNAL_ERROR_MESSAGE);
+               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -84,7 +85,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 logger.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
                 throw new ServiceException(ErrorCode.NOT_FOUND, //
                    ErrorCode.NOT_FOUND.getCode().toString(), //
-                   INTERNAL_ERROR_MESSAGE);
+                   ServiceExceptionMessages.NOT_FOUND_MESSAGE);
             }
             {entityName} {entityVar} = {entityVar}Mapper.fromDTO({dtoVar});
             {entityVar}Repository.save({entityVar});
@@ -95,7 +96,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             logger.error("Not managed error in insert transaction",ex);
             throw new ServiceException(ErrorCode.INTERNAL, //
                ErrorCode.INTERNAL.getCode().toString(), //
-               INTERNAL_ERROR_MESSAGE);
+               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -110,16 +111,16 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 logger.error("Entity not exists in database - ID: {}",id);
                 throw new ServiceException(ErrorCode.NOT_FOUND, //
                    ErrorCode.NOT_FOUND.getCode().toString(), //
-                   INTERNAL_ERROR_MESSAGE);
+                   ServiceExceptionMessages.NOT_FOUND_MESSAGE);
             }
             return {entityVar}Mapper.fromEntity({entityVar}Repository.getOne(id));
         }catch(ServiceException excp){
             throw excp;
         }catch(Exception ex){
-            logger.error("Not managed error in select transaction", ex);
+            logger.error("Not managed error in select by id transaction", ex);
             throw new ServiceException(ErrorCode.INTERNAL, //
                ErrorCode.INTERNAL.getCode().toString(), //
-               INTERNAL_ERROR_MESSAGE);
+               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -137,7 +138,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             logger.error("Not managed error in select transaction", ex);
             throw new ServiceException(ErrorCode.INTERNAL, //
                ErrorCode.INTERNAL.getCode().toString(), //
-               INTERNAL_ERROR_MESSAGE);
+               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
         }
     }
 
@@ -173,7 +174,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 logger.error("Not managed error in select transaction",ex);
                 throw new ServiceException(ErrorCode.INTERNAL, //
                     ErrorCode.INTERNAL.getCode().toString(), //
-                    INTERNAL_ERROR_MESSAGE);
+                    ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
             }
     }
 }
