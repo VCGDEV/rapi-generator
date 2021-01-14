@@ -54,6 +54,11 @@ public class {entityName}ControllerTest {
         return dto;
     }
 
+    private void assertDTOProperties({dtoName} dto) {
+        assertEquals(expectedId, dto.getId());
+        //TODO add all dto properties
+    }
+
     @Test
     public void add{entityName}_successTransaction_responseCreated() throws Exception {
         {dtoName} resultFromService = mockDTO();
@@ -67,8 +72,7 @@ public class {entityName}ControllerTest {
         assertNotNull(responseResult.getBody());
 
         {dtoName} resultDTO = responseResult.getBody();
-        assertEquals(expectedId, resultDTO.getId());
-        // TODO assert all properties of DTO
+        assertDTOProperties(resultDTO);
     }
 
      @Test
@@ -84,7 +88,7 @@ public class {entityName}ControllerTest {
         assertNotNull(responseResult.getBody());
 
         {dtoName} resultDTO = responseResult.getBody();
-        assertEquals(resultDTO.getId(), expectedId);
+        assertDTOProperties(resultDTO);
     }
 
     @Test
@@ -100,8 +104,7 @@ public class {entityName}ControllerTest {
         assertNotNull(responseResult.getBody());
 
         {dtoName} resultDTO = responseResult.getBody();
-        assertEquals(resultDTO.getId(), expectedId);
-        // TODO match all properties from DTO      
+        assertDTOProperties(resultDTO);      
     }
 
     @Test
@@ -118,8 +121,6 @@ public class {entityName}ControllerTest {
 
         Collection<{dtoName}> collectionResult = responseResult.getBody();
         assertFalse(collectionResult.isEmpty());
-
-        //TODO iterate over collection and match properties
     }
 
     @Test
@@ -135,7 +136,7 @@ public class {entityName}ControllerTest {
 
         Page<{dtoName}> paginatedResult = responseResult.getBody();
         assertEquals(1, paginatedResult.getContent().size());
-        // TODO match DTO properties
+        assertDTOProperties(paginatedResult.getContent().get(0));
     }
 
 
