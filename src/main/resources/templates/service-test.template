@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,7 +37,7 @@ import org.springframework.data.domain.Page;
 import java.util.Collection;
 import java.util.Collections;
 
-@DisplayName("") // TODO update display name
+@DisplayName("{entityName} Service Testing")
 @ExtendWith(MockitoExtension.class)
 public class {entityName}ServiceTest {
 
@@ -65,11 +65,16 @@ public class {entityName}ServiceTest {
         service = new {entityName}ServiceImpl(repository, mapper);
     }
 
+    private void assertDTOProperties({dtoName} dto) {
+        assertEquals(id, dto.getId());
+        //TODO add all propertiers from DTO
+    }
+
     @Test
     public void add{entityName}_successTransaction() throws Exception {
         {dtoName} dto = service.add{entityName}({dtoVar});
         assertNotNull(dto);
-        // TODO assert properties
+        assertDTOProperties(dto);
     }
 
 
@@ -126,7 +131,7 @@ public class {entityName}ServiceTest {
 
         assertNotNull(dto);
         assertEquals(id, dto.getId());
-        //TODO assert properties
+        assertDTOProperties(dto);
 
         verify(repository).existsById(eq(id));
 
@@ -193,8 +198,7 @@ public class {entityName}ServiceTest {
         {entityName}DTO dto = service.findById(id);
 
         assertNotNull(dto);
-        assertEquals(id, dto.getId());
-        // TODO assert properties
+        assertDTOProperties(dto);
 
         verify(repository).existsById(eq(id));
 
@@ -266,7 +270,7 @@ public class {entityName}ServiceTest {
 
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
         assertFalse(cte.getErrors().isEmpty());
-        verifyZeroInteractions(repository);
+        verifyNoInteractions(repository);
     }
 
     @Test
