@@ -9,10 +9,7 @@ import org.springframework.data.domain.Page;
 * Created using Rest API Generator
 * Basic CRUD service
 */
-public interface {entityName}Service{
-
-    // TODO add specific message
-    String INTERNAL_ERROR_MESSAGE = "";
+public interface {entityName}Service {
 
     /**
     * Method to add new {entityName} in database
