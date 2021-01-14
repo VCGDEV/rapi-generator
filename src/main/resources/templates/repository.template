@@ -7,4 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface {entityName}Repository extends
-JpaRepository<{entityName},{classId}>, JpaSpecificationExecutor{}
+JpaRepository<{entityName},{classId}>, JpaSpecificationExecutor<{entityName}> {}
