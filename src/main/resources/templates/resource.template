@@ -116,7 +116,7 @@ public class {entityName}Controller {
         @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
         @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
     })
-    @GetMapping(value="paginatedResult")
+    @GetMapping(value="pages")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public HttpEntity<Page<{dtoName}>> getPaginatedResult(
             @RequestParam(required = false,defaultValue = "0") Integer page,
