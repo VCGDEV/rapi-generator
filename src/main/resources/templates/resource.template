@@ -7,10 +7,10 @@ import com.vcgdev.common.swagger.SwaggerConstants;
 
 import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.annotation.Validated;
 
+import lombok.extern.slf4j.Slf4j;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,6 +33,8 @@ import io.swagger.annotations.ApiResponses;
 @RestController()
 @RequestMapping("{mapping}")
 @Api(produces = SwaggerConstants.APPLICATION_JSON_RESPONSE, tags = {}) // TODO add api tags
+@Slf4j
+@Validated
 public class {entityName}Controller {
     
     private {entityName}Service {entityVar}Service;
@@ -49,11 +53,18 @@ public class {entityName}Controller {
     })
     @PostMapping()
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<{dtoName}> add{entityName}(
-        @RequestBody @Validated {dtoName} {dtoVar}
+    public ResponseEntity<{dtoName}> add{entityName}(
+        @RequestBody @Valid {dtoName} {dtoVar}
     ) throws ServiceException {
-        {dtoName} dto = this.{entityVar}Service.add{entityName}({dtoVar});
-        return new ResponseEntity<>(dto,HttpStatus.CREATED);
+        try {         
+            {dtoName} dto = this.{entityVar}Service.add{entityName}({dtoVar});
+            return new ResponseEntity<>(dto,HttpStatus.CREATED);    
+        } catch (ServiceException se) {
+            throw se;
+        } catch (Exception e) {
+            log.error("Unable to save request", e);
+            throw new ServiceException(ErrorCode.INTERNAL);
+        }
     }
 
     
@@ -67,13 +78,20 @@ public class {entityName}Controller {
     })
     @PutMapping(value="{id}")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<{dtoName}> update{entityName}(
-        @RequestBody @Validated {dtoName} {dtoVar},
+    public ResponseEntity<{dtoName}> update{entityName}(
+        @RequestBody @Valid {dtoName} {dtoVar},
         @PathVariable {classId} id
-        ) throws ServiceException {    
-        {dtoVar}.setId(id);
-        {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});        
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        ) throws ServiceException {
+        try {
+            {dtoVar}.setId(id);
+            {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});        
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (ServiceException se) {
+            throw se;
+        } catch (Exception e) {
+            log.error("Unable to update request", e);
+            throw new ServiceException(ErrorCode.INTERNAL);
+        }        
     }
 
     
@@ -87,7 +105,7 @@ public class {entityName}Controller {
     })    
     @GetMapping(value="{id}")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<{dtoName}> findById(@PathVariable {classId} id) throws ServiceException {        
+    public ResponseEntity<{dtoName}> findById(@PathVariable {classId} id) throws ServiceException {        
         return new ResponseEntity<>(this.{entityVar}Service.findById(id), HttpStatus.OK);
     }
 
@@ -102,7 +120,7 @@ public class {entityName}Controller {
     })
     @GetMapping()
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<Collection<{dtoName}>> findAll() throws ServiceException {        
+    public ResponseEntity<Collection<{dtoName}>> findAll() throws ServiceException {        
         Collection<{dtoName}> dtoList = this.{entityVar}Service.findAll();
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
@@ -118,7 +136,7 @@ public class {entityName}Controller {
     })
     @GetMapping(value="pages")
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
-    public HttpEntity<Page<{dtoName}>> getPaginatedResult(
+    public ResponseEntity<Page<{dtoName}>> getPaginatedResult(
             @RequestParam(required = false,defaultValue = "0") Integer page,
             @RequestParam(required = false,defaultValue = "20") Integer size,
             @RequestParam(required = false) String columnToOrder,

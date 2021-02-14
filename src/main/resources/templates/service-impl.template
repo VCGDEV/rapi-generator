@@ -61,16 +61,9 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             {entityName} {entityVar} = {entityVar}Mapper.fromDTO({dtoVar});
             {entityVar}Repository.save({entityVar});
             return {entityVar}Mapper.fromEntity({entityVar});
-        }catch(DataIntegrityViolationException dve){
-            log.error("Error in insert transaction",dve);
-            throw new ServiceException(ErrorCode.INTERNAL, //
-               ErrorCode.INTERNAL.getCode().toString(), //
-               ServiceExceptionMessages.DATA_INSERT_INTEGRITY_MESSAGE);
-        }catch(Exception ex){
+        } catch(Exception ex){
             log.error("Not managed error in insert transaction",ex);
-            throw new ServiceException(ErrorCode.INTERNAL, //
-               ErrorCode.INTERNAL.getCode().toString(), //
-               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
+            throw new ServiceException(ErrorCode.INTERNAL);
         }
     }
 
@@ -94,10 +87,8 @@ public class {entityName}ServiceImpl implements {entityName}Service {
         }catch(ServiceException xe){
             throw xe;
         }catch(Exception ex){
-            log.error("Not managed error in insert transaction",ex);
-            throw new ServiceException(ErrorCode.INTERNAL, //
-               ErrorCode.INTERNAL.getCode().toString(), //
-               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
+            log.error("Not managed error in insert transaction", ex);
+            throw new ServiceException(ErrorCode.INTERNAL);
         }
     }
 
@@ -119,9 +110,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             throw excp;
         }catch(Exception ex){
             log.error("Not managed error in select by id transaction", ex);
-            throw new ServiceException(ErrorCode.INTERNAL, //
-               ErrorCode.INTERNAL.getCode().toString(), //
-               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
+            throw new ServiceException(ErrorCode.INTERNAL);
         }
     }
 
@@ -137,9 +126,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
             .collect(Collectors.toList());
         }catch(Exception ex){
             log.error("Not managed error in select transaction", ex);
-            throw new ServiceException(ErrorCode.INTERNAL, //
-               ErrorCode.INTERNAL.getCode().toString(), //
-               ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
+            throw new ServiceException(ErrorCode.INTERNAL);
         }
     }
 
@@ -173,9 +160,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                 return new PageImpl<>(resourcesList, request, {entityVar}Page.getTotalElements());
             }catch (Exception ex){
                 log.error("Not managed error in select transaction",ex);
-                throw new ServiceException(ErrorCode.INTERNAL, //
-                    ErrorCode.INTERNAL.getCode().toString(), //
-                    ServiceExceptionMessages.INTERNAL_ERROR_MESSAGE);
+                throw new ServiceException(ErrorCode.INTERNAL);
             }
     }
 }
