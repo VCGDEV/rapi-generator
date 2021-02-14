@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.vcgdev.common.exception.ServiceException;
+import com.vcgdev.common.exception.ErrorCode;
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
 
@@ -75,7 +78,27 @@ public class {entityName}ControllerTest {
         assertDTOProperties(resultDTO);
     }
 
-     @Test
+    @Test
+    public void add{entityName}_CatchServiceException_ExceptionIsPropagated() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        
+        when(service.add{entityName}(any({dtoName}.class)))
+           .thenThrow(new ServiceException(ErrorCode.INTERNAL));
+        
+        assertThrows(ServiceException.class, () -> controller.add{entityName}(expectedDTO));
+    }
+
+    @Test
+    public void add{entityName}_CatchException_ExceptionIsPropagated() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        
+        when(service.add{entityName}(any({dtoName}.class)))
+           .thenThrow(new RuntimeException());
+        
+        assertThrows(ServiceException.class, () -> controller.add{entityName}(expectedDTO));
+    }
+
+    @Test
     public void update{entityName}_sucessTransaction_responseOK() throws Exception {
         {dtoName} resultFromService = mockDTO();
 
@@ -90,6 +113,27 @@ public class {entityName}ControllerTest {
         {dtoName} resultDTO = responseResult.getBody();
         assertDTOProperties(resultDTO);
     }
+
+    @Test
+    public void update{entityName}_CatchServiceException_ExceptionIsPropagated() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        
+        when(service.update{entityName}(any({dtoName}.class)))
+           .thenThrow(new ServiceException(ErrorCode.INTERNAL));
+        
+        assertThrows(ServiceException.class, () -> controller.update{entityName}(expectedDTO, expectedId));
+    }
+
+    @Test
+    public void update{entityName}_CatchException_ExceptionIsPropagated() throws Exception {
+        {dtoName} resultFromService = mockDTO();
+        
+        when(service.update{entityName}(any({dtoName}.class)))
+           .thenThrow(new RuntimeException());
+        
+        assertThrows(ServiceException.class, () -> controller.update{entityName}(expectedDTO, expectedId));
+    }
+
 
     @Test
     public void findById_serviceReturnsElement_responseOK() throws Exception {

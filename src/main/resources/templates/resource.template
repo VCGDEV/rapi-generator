@@ -2,6 +2,7 @@ package {basePackage}.{resourcePackage};
 
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
+import com.vcgdev.common.exception.ErrorCode;
 import com.vcgdev.common.exception.ServiceException;
 import com.vcgdev.common.swagger.SwaggerConstants;
 
