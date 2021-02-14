@@ -87,7 +87,7 @@ public class {entityName}ServiceTest {
             service.add{entityName}({dtoVar});
         });
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
-        assertFalse(cte.getErrors().isEmpty());
+        assertTrue(cte.getErrors().isEmpty());
 
         verify(repository).save(any({entityName}.class));
     }
@@ -101,7 +101,7 @@ public class {entityName}ServiceTest {
             service.add{entityName}({dtoVar});
         });
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
-        assertFalse(cte.getErrors().isEmpty());
+        assertTrue(cte.getErrors().isEmpty());
 
         verify(repository).save(any({entityName}.class));
     }
@@ -148,7 +148,7 @@ public class {entityName}ServiceTest {
         });
 
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
-        assertFalse(cte.getErrors().isEmpty());
+        assertTrue(cte.getErrors().isEmpty());
 
         verify(repository).existsById(eq(id));
 
@@ -180,7 +180,7 @@ public class {entityName}ServiceTest {
             service.findById(id);
         });
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
-        assertFalse(cte.getErrors().isEmpty());
+        assertTrue(cte.getErrors().isEmpty());
 
         verify(repository).existsById(eq(id));
 
@@ -216,7 +216,7 @@ public class {entityName}ServiceTest {
         });
 
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
-        assertFalse(cte.getErrors().isEmpty());
+        assertTrue(cte.getErrors().isEmpty());
     }
 
     @Test
@@ -269,7 +269,7 @@ public class {entityName}ServiceTest {
         
 
         assertEquals(ErrorCode.INTERNAL, cte.getCode());
-        assertFalse(cte.getErrors().isEmpty());
+        assertTrue(cte.getErrors().isEmpty());
         verifyNoInteractions(repository);
     }
 
