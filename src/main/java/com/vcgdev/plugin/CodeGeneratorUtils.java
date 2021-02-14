@@ -38,7 +38,6 @@ class CodeGeneratorUtils {
     private String repositoryPackage;
     private String servicePackage;
     private String entityPackage;
-    private String exceptionClass;
     private String classId;
     private String resourcePackage;
     private String mapperPackage;
@@ -62,8 +61,6 @@ class CodeGeneratorUtils {
         if(stream==null)
             throw new IllegalArgumentException("Error to load stream");
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        if(reader==null)
-            throw new IllegalArgumentException("Template does not exists");
         StringBuffer buffer = new StringBuffer();
         String line;
         while((line = reader.readLine())!=null){
