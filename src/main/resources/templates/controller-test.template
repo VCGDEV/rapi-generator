@@ -80,7 +80,6 @@ public class {entityName}ControllerTest {
 
     @Test
     public void add{entityName}_CatchServiceException_ExceptionIsPropagated() throws Exception {
-        {dtoName} resultFromService = mockDTO();
         
         when(service.add{entityName}(any({dtoName}.class)))
            .thenThrow(new ServiceException(ErrorCode.INTERNAL));
@@ -90,7 +89,6 @@ public class {entityName}ControllerTest {
 
     @Test
     public void add{entityName}_CatchException_ExceptionIsPropagated() throws Exception {
-        {dtoName} resultFromService = mockDTO();
         
         when(service.add{entityName}(any({dtoName}.class)))
            .thenThrow(new RuntimeException());
@@ -116,7 +114,6 @@ public class {entityName}ControllerTest {
 
     @Test
     public void update{entityName}_CatchServiceException_ExceptionIsPropagated() throws Exception {
-        {dtoName} resultFromService = mockDTO();
         
         when(service.update{entityName}(any({dtoName}.class)))
            .thenThrow(new ServiceException(ErrorCode.INTERNAL));
@@ -126,7 +123,6 @@ public class {entityName}ControllerTest {
 
     @Test
     public void update{entityName}_CatchException_ExceptionIsPropagated() throws Exception {
-        {dtoName} resultFromService = mockDTO();
         
         when(service.update{entityName}(any({dtoName}.class)))
            .thenThrow(new RuntimeException());
@@ -170,7 +166,7 @@ public class {entityName}ControllerTest {
     @Test
     public void getPaginatedResult_serviceReturnsPage_responseOK() throws Exception {
         when(service.getPaginatedResult(eq(0), eq(10), eq("id"), eq("asc")))
-            .thenReturn(new PageImpl(Collections.singletonList(expectedDTO), PageRequest.of(0, 10), 10));
+            .thenReturn(new PageImpl<>(Collections.singletonList(expectedDTO), PageRequest.of(0, 10), 10));
         
         ResponseEntity<Page<{dtoName}>> responseResult = controller.getPaginatedResult(0, 10, "id", "asc");
         
