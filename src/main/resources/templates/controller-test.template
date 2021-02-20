@@ -68,7 +68,7 @@ public class {entityName}ControllerTest {
         
         when(service.add{entityName}(any({dtoName}.class)))
            .thenReturn(resultFromService);
-        ResponseEntity<{dtoName}> responseResult = (ResponseEntity)controller.add{entityName}(expectedDTO);
+        ResponseEntity<{dtoName}> responseResult = controller.add{entityName}(expectedDTO);
 
         assertNotNull(responseResult);
         assertEquals(HttpStatus.CREATED, responseResult.getStatusCode());
@@ -104,7 +104,7 @@ public class {entityName}ControllerTest {
 
         when(service.update{entityName}(any({dtoName}.class)))
            .thenReturn(resultFromService);
-        ResponseEntity<{dtoName}> responseResult = (ResponseEntity)controller.update{entityName}(expectedDTO, expectedId);
+        ResponseEntity<{dtoName}> responseResult = controller.update{entityName}(expectedDTO, expectedId);
 
         assertNotNull(responseResult);
         assertEquals(HttpStatus.OK, responseResult.getStatusCode());
@@ -141,7 +141,7 @@ public class {entityName}ControllerTest {
         when(service.findById(eq(expectedId)))
             .thenReturn(resultFromService);
 
-        ResponseEntity<{dtoName}> responseResult = (ResponseEntity)controller.findById(expectedId);
+        ResponseEntity<{dtoName}> responseResult = controller.findById(expectedId);
 
         assertNotNull(responseResult);
         assertEquals(HttpStatus.OK, responseResult.getStatusCode());
@@ -157,7 +157,7 @@ public class {entityName}ControllerTest {
         when(service.findAll())
             .thenReturn(Collections.singletonList(resultFromService));
 
-        ResponseEntity<Collection<{dtoName}>>   responseResult = (ResponseEntity)controller.findAll();
+        ResponseEntity<Collection<{dtoName}>>   responseResult = controller.findAll();
 
         assertNotNull(responseResult);
         assertEquals(HttpStatus.OK, responseResult.getStatusCode());
@@ -172,7 +172,7 @@ public class {entityName}ControllerTest {
         when(service.getPaginatedResult(eq(0), eq(10), eq("id"), eq("asc")))
             .thenReturn(new PageImpl(Collections.singletonList(expectedDTO), PageRequest.of(0, 10), 10));
         
-        ResponseEntity<Page<{dtoName}>> responseResult = (ResponseEntity)controller.getPaginatedResult(0, 10, "id", "asc");
+        ResponseEntity<Page<{dtoName}>> responseResult = controller.getPaginatedResult(0, 10, "id", "asc");
         
         assertNotNull(responseResult);
         assertEquals(HttpStatus.OK, responseResult.getStatusCode());
