@@ -26,6 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mock;
 
@@ -36,6 +39,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 @DisplayName("{entityName} Service Testing")
 @ExtendWith(MockitoExtension.class)
@@ -229,39 +233,6 @@ public class {entityName}ServiceTest {
     }
 
     @Test
-    public void getPaginatedResult_noParametersProvided_pageIsReturned () throws Exception {
-        when(repository.findAll(any(PageRequest.class)))
-            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
-        
-        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, null, null);
-
-        assertNotNull(dtoPage);
-        assertEquals(1, dtoPage.getContent().size());
-    }
-
-    @Test
-    public void getPaginatedResult_ascSortAndColumnProvided_pageIsReturned () throws Exception {
-        when(repository.findAll(any(PageRequest.class)))
-            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
-        
-        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(1, 10, "id", "asc");
-
-        assertNotNull(dtoPage);
-        assertEquals(1, dtoPage.getContent().size());
-    }
-
-    @Test
-    public void getPaginatedResult_descSortAndColumnProvided_pageIsReturned () throws Exception {
-        when(repository.findAll(any(PageRequest.class)))
-            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
-        
-        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "id", "desc");
-
-        assertNotNull(dtoPage);
-        assertEquals(1, dtoPage.getContent().size());
-    }
-
-    @Test
     public void getPaginatedResult_invalidParametersProvided_customExceptionIsThrown () throws Exception {        
         ServiceException cte = assertThrows(ServiceException.class, () -> {
             Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "invalidColumn", "invalidOrder");
@@ -273,15 +244,24 @@ public class {entityName}ServiceTest {
         verifyNoInteractions(repository);
     }
 
-    @Test
-    public void getPaginatedResult_orderIsNull_defaultSortIsReturned () throws Exception {
+    @ParameterizedTest(name = "#{index} Run test with Page= {0} - Size = {1} - Column = {2} - Orded = {3}")
+    @MethodSource("validPageParameters")
+    void getPaginatedResult_parametersProvided_pageIsReturned(Integer page, Integer size, String column, String order) throws Exception {
         when(repository.findAll(any(PageRequest.class)))
-            .thenReturn(new PageImpl(Collections.singletonList(entity), PageRequest.of(0, 10), 10));
-        
-        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(0, 10, "is", null);
+            .thenReturn(new PageImpl<>(Collections.singletonList(entity), PageRequest.of(page, size), size));
+        Page<{entityName}DTO> dtoPage = service.getPaginatedResult(page, size, column, order);
 
         assertNotNull(dtoPage);
         assertEquals(1, dtoPage.getContent().size());
+    }
+
+    static Stream<Arguments> validPageParameters() {
+        return Stream.of(
+            Arguments.of(0, 10, null,  null),
+            Arguments.of(1, 10, "id", "asc"),
+            Arguments.of(1, 10, "id", "desc"),
+            Arguments.of(1, 10, "is", null)
+        );
     }
 
 }
