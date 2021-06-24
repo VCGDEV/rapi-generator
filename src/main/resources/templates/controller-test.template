@@ -26,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.vcgdev.common.exception.ServiceException;
+import com.vcgdev.common.dto.OrderTypeDTO;
 import com.vcgdev.common.exception.ErrorCode;
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
@@ -42,8 +43,8 @@ public class {entityName}ControllerTest {
 
     private {dtoName} expectedDTO;
 
-    // TODO change id class type
-    private String expectedId = "test-id";
+    // TODO initialize value
+    private {classId} expectedId;
 
     @BeforeEach
     public void setup() {
@@ -100,7 +101,7 @@ public class {entityName}ControllerTest {
     public void update{entityName}_sucessTransaction_responseOK() throws Exception {
         {dtoName} resultFromService = mockDTO();
 
-        when(service.update{entityName}(any({dtoName}.class)))
+        when(service.update{entityName}(eq(expectedId), any({dtoName}.class)))
            .thenReturn(resultFromService);
         ResponseEntity<{dtoName}> responseResult = controller.update{entityName}(expectedDTO, expectedId);
 
@@ -115,7 +116,7 @@ public class {entityName}ControllerTest {
     @Test
     public void update{entityName}_CatchServiceException_ExceptionIsPropagated() throws Exception {
         
-        when(service.update{entityName}(any({dtoName}.class)))
+        when(service.update{entityName}(eq(expectedId), any({dtoName}.class)))
            .thenThrow(new ServiceException(ErrorCode.INTERNAL));
         
         assertThrows(ServiceException.class, () -> controller.update{entityName}(expectedDTO, expectedId));
@@ -124,7 +125,7 @@ public class {entityName}ControllerTest {
     @Test
     public void update{entityName}_CatchException_ExceptionIsPropagated() throws Exception {
         
-        when(service.update{entityName}(any({dtoName}.class)))
+        when(service.update{entityName}(eq(expectedId), any({dtoName}.class)))
            .thenThrow(new RuntimeException());
         
         assertThrows(ServiceException.class, () -> controller.update{entityName}(expectedDTO, expectedId));
@@ -134,7 +135,7 @@ public class {entityName}ControllerTest {
     @Test
     public void findById_serviceReturnsElement_responseOK() throws Exception {
         {dtoName} resultFromService = mockDTO();
-        when(service.findById(eq(expectedId)))
+        when(service.findById(expectedId))
             .thenReturn(resultFromService);
 
         ResponseEntity<{dtoName}> responseResult = controller.findById(expectedId);
@@ -165,10 +166,10 @@ public class {entityName}ControllerTest {
 
     @Test
     public void getPaginatedResult_serviceReturnsPage_responseOK() throws Exception {
-        when(service.getPaginatedResult(eq(0), eq(10), eq("id"), eq("asc")))
+        when(service.getPaginatedResult(0, 10, "id", OrderTypeDTO.ASC))
             .thenReturn(new PageImpl<>(Collections.singletonList(expectedDTO), PageRequest.of(0, 10), 10));
         
-        ResponseEntity<Page<{dtoName}>> responseResult = controller.getPaginatedResult(0, 10, "id", "asc");
+        ResponseEntity<Page<{dtoName}>> responseResult = controller.getPaginatedResult(0, 10, "id", OrderTypeDTO.ASC);
         
         assertNotNull(responseResult);
         assertEquals(HttpStatus.OK, responseResult.getStatusCode());

@@ -15,9 +15,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import {basePackage}.{servicePackage}.{entityName}Service;
+import com.vcgdev.common.dto.OrderTypeDTO;
 import com.vcgdev.common.exception.ErrorCode; 
 import com.vcgdev.common.exception.ServiceException;
-import com.vcgdev.common.service.ServiceExceptionMessages;
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{mapperPackage}.{entityName}Mapper;
 import {basePackage}.{repositoryPackage}.{entityName}Repository;
@@ -73,15 +73,14 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @throws ServiceException if an error happens in transaction
     */
     @Transactional(rollbackFor=ServiceException.class)
-    public {dtoName} update{entityName}({dtoName} {dtoVar}) throws ServiceException {
+    public {dtoName} update{entityName}({classId} id, {dtoName} {dtoVar}) throws ServiceException {
         try{
-            if(!{entityVar}Repository.existsById({dtoVar}.getId())){
-                log.error("Entity not exists in database - ID: {}",{dtoVar}.getId());
-                throw new ServiceException(ErrorCode.NOT_FOUND, //
-                   ErrorCode.NOT_FOUND.getCode().toString(), //
-                   ServiceExceptionMessages.NOT_FOUND_MESSAGE);
+            if(!{entityVar}Repository.existsById(id)){
+                log.error("Entity not exists in database - ID: {}",id);
+                throw new ServiceException(ErrorCode.NOT_FOUND);
             }
             {entityName} {entityVar} = {entityVar}Mapper.fromDTO({dtoVar});
+            {entityVar}.setId(id);
             {entityVar}Repository.save({entityVar});
             return {entityVar}Mapper.fromEntity({entityVar});
         }catch(ServiceException xe){
@@ -101,9 +100,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
         try{
             if(!{entityVar}Repository.existsById(id)){
                 log.error("Entity not exists in database - ID: {}",id);
-                throw new ServiceException(ErrorCode.NOT_FOUND, //
-                   ErrorCode.NOT_FOUND.getCode().toString(), //
-                   ServiceExceptionMessages.NOT_FOUND_MESSAGE);
+                throw new ServiceException(ErrorCode.NOT_FOUND);
             }
             return {entityVar}Mapper.fromEntity({entityVar}Repository.getOne(id));
         }catch(ServiceException excp){
@@ -140,16 +137,17 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * @throws ServiceException if an error happens in query select
     */
     public Page<{dtoName}> getPaginatedResult(
-            Integer page,Integer size,String columnToOrder, String orderType
+            Integer page,Integer size,String columnToOrder, OrderTypeDTO orderType
         ) throws ServiceException {
             try {
                 Sort sort = Sort.by(Sort.Direction.ASC, (String) columnNames.get("id"));
                 if (columnToOrder != null && orderType != null) {
-                    if (orderType.equalsIgnoreCase("asc")) {
-                        sort = Sort.by(Sort.Direction.ASC, (String) columnNames.get(columnToOrder));
-                    }else {
-                        sort = Sort.by(Sort.Direction.DESC, (String) columnNames.get(columnToOrder));
+                    String colName = columnNames.get(columnToOrder);
+                    if(colName == null) {
+                        log.error("Column provided to order is null: {}", columnToOrder);
+                        throw new ServiceException(ErrorCode.BAD_REQUEST);
                     }
+                    sort = orderType == OrderTypeDTO.ASC ?  Sort.by(Sort.Direction.ASC, colName) : Sort.by(Sort.Direction.DESC, colName);                    
                 }
                 PageRequest request = PageRequest.of(page, size, sort);
                 Page<{entityName}> {entityVar}Page = {entityVar}Repository.findAll(request);
@@ -158,9 +156,33 @@ public class {entityName}ServiceImpl implements {entityName}Service {
                                     .map({entityVar}Mapper::fromEntity)
                                     .collect(Collectors.toList());
                 return new PageImpl<>(resourcesList, request, {entityVar}Page.getTotalElements());
-            }catch (Exception ex){
+            } catch(ServiceException se) {
+                throw se;
+            }
+            catch (Exception ex){
                 log.error("Not managed error in select transaction",ex);
                 throw new ServiceException(ErrorCode.INTERNAL);
             }
+    }
+
+
+    /**
+    * Delete entity by ID
+    * @param id the id to be removed from DB
+    */
+    @Transactional(readOnly = false)
+    public void deleteById({classId} id) throws ServiceException {
+        try {
+            if(!{entityVar}Repository.existsById(id)) {
+                log.error("Entity not exists in database - ID: {}",id);
+                throw new ServiceException(ErrorCode.NOT_FOUND);
+            }
+            {entityVar}Repository.deleteById(id);
+        } catch (ServiceException se) {
+            throw se;
+        } catch (Exception e) {
+            log.error("Unable to delete by id: {}", id, e);
+            throw new ServiceException(ErrorCode.INTERNAL);
+        }
     }
 }
