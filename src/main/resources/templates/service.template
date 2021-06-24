@@ -1,6 +1,7 @@
 package {basePackage}.{servicePackage};
 
 import com.vcgdev.common.exception.ServiceException;
+import com.vcgdev.common.dto.OrderTypeDTO;
 import {basePackage}.{dtoPackage}.{dtoName};
 import java.util.Collection;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,10 @@ public interface {entityName}Service {
     /**
     * Method to update values of entity
     * @param {dtoVar} the values to update
+    * @param {id} object id to be updated
     * @throws ServiceException if an error happens in transaction
     */
-    {dtoName} update{entityName}({dtoName} {dtoVar}) throws ServiceException ;
+    {dtoName} update{entityName}({classId} id, {dtoName} {dtoVar}) throws ServiceException;
 
     /**
     * Get details of {entityName}
@@ -48,7 +50,12 @@ public interface {entityName}Service {
     * @throws ServiceException if an error happens in query select
     */
     Page<{dtoName}> getPaginatedResult(
-        Integer page,Integer size,String columnToOrder, String orderType
+        Integer page,Integer size,String columnToOrder, OrderTypeDTO orderType
     ) throws ServiceException ;
+
+    /**
+    * Delete entity by id
+    */
+    void deleteById({classId} id) throws ServiceException;
 
 }

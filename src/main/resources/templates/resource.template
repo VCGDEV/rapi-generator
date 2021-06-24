@@ -2,6 +2,7 @@ package {basePackage}.{resourcePackage};
 
 import {basePackage}.{dtoPackage}.{dtoName};
 import {basePackage}.{servicePackage}.{entityName}Service;
+import com.vcgdev.common.dto.OrderTypeDTO;
 import com.vcgdev.common.exception.ErrorCode;
 import com.vcgdev.common.exception.ServiceException;
 import com.vcgdev.common.swagger.SwaggerConstants;
@@ -84,8 +85,7 @@ public class {entityName}Controller {
         @PathVariable {classId} id
         ) throws ServiceException {
         try {
-            {dtoVar}.setId(id);
-            {dtoName} dto = this.{entityVar}Service.update{entityName}({dtoVar});        
+            {dtoName} dto = this.{entityVar}Service.update{entityName}(id, {dtoVar});        
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (ServiceException se) {
             throw se;
@@ -141,7 +141,7 @@ public class {entityName}Controller {
             @RequestParam(required = false,defaultValue = "0") Integer page,
             @RequestParam(required = false,defaultValue = "20") Integer size,
             @RequestParam(required = false) String columnToOrder,
-            @RequestParam(required = false) String orderType
+            @RequestParam(required = false) OrderTypeDTO orderType
         ) throws ServiceException {
         Page<{dtoName}> paginatedResult = this.{entityVar}Service.getPaginatedResult(page,size,columnToOrder,orderType);
         return new ResponseEntity<>(paginatedResult, HttpStatus.OK);
