@@ -29,7 +29,7 @@ plugins {
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.artifactory"
 group 'com.vcgdev.plugin'
-version '1.1-SNAPSHOT'
+version '1.3.4-SNAPSHOT'
 sourceCompatibility = 1.8
 
 task sourcesJar(type: Jar) {
@@ -57,7 +57,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'rapi-generator'
-            version = '1.3.3'
+            version = "${version}"
             from components.java
             artifact sourcesJar
             artifact javadocJar
@@ -68,10 +68,10 @@ publishing {
 }
 
 artifactory {
-    contextUrl = "https://vsatdev.jfrog.io/artifactory"
+    contextUrl = "http://69.64.34.188:8081/artifactory"
     publish {
         repository {            
-            repoKey = 'gradle-dev-local'
+            repoKey = 'release-local'
             username = System.getenv("artifactory_user")
             password = System.getenv("artifactory_password")
             maven = true
