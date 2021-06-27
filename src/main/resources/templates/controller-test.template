@@ -4,8 +4,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -179,6 +181,36 @@ public class {entityName}ControllerTest {
         assertEquals(1, paginatedResult.getContent().size());
         assertDTOProperties(paginatedResult.getContent().get(0));
     }
+
+    @Test
+    public void deleteById_serviceThrowsException_ExceptionIsPropagated() throws Exception {
+    	doThrow(new ServiceException(ErrorCode.NOT_FOUND))
+    		.when(service).deleteById(expectedId);
+    	
+    	ServiceException se = assertThrows(ServiceException.class, () -> controller.deleteById(expectedId));
+    	
+    	assertEquals(ErrorCode.NOT_FOUND, se.getCode());
+    }
+    
+    @Test
+    public void deleteById_serviceThrowsRuntimeException_CustomExceptionIsThrown() throws Exception {
+    	doThrow(new RuntimeException())
+    		.when(service).deleteById(expectedId);
+    	
+    	ServiceException se = assertThrows(ServiceException.class, () -> controller.deleteById(expectedId));
+    	
+    	assertEquals(ErrorCode.INTERNAL, se.getCode());
+    }
+    
+    @Test
+    public void deleteById_ObjectIsRemoved_ResponseIsSuccess () throws Exception {
+    	
+    	ResponseEntity<Void> response = controller.deleteById(expectedId);
+    	
+    	assertNotNull(response);
+    	assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    	assertNull(response.getBody());
+    } 
 
 
 }

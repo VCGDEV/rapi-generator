@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,6 +109,28 @@ public class {entityName}Controller {
     @PreAuthorize(value = "isAuthenticated()") // TODO update if required
     public ResponseEntity<{dtoName}> findById(@PathVariable {classId} id) throws ServiceException {        
         return new ResponseEntity<>(this.{entityVar}Service.findById(id), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Delete {entityName} by Id", httpMethod = SwaggerConstants.HTTP_DELETE)
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = SwaggerConstants.OK_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = SwaggerConstants.BAD_REQUEST_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = SwaggerConstants.INTERNAL_SERVER_ERROR_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_FORBIDDEN, message = SwaggerConstants.FORBIDDEN_MESSAGE),
+        @ApiResponse(code = HttpServletResponse.SC_UNAUTHORIZED, message = SwaggerConstants.UNAUTHORIZED_MESSAGE)
+    })    
+    @DeleteMapping(value="{id}")
+    @PreAuthorize(value = "isAuthenticated()") // TODO update if required    
+    public ResponseEntity<Void> deleteById(@PathVariable {classId} id) throws ServiceException {
+    	try {
+    		this.{entityVar}Service.deleteById(id);
+    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    	} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("Unable to remove by id: {}", id, e);
+			throw new ServiceException(ErrorCode.INTERNAL);
+		}
     }
 
     

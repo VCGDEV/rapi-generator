@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -208,6 +207,39 @@ public class {entityName}ServiceTest {
         verify(repository).existsById(id);
 
         verify(repository).getOne(id);
+    }
+
+    @Test
+    public void deleteById_entityNotExists_customExceptionIsThrown() throws Exception {
+    	
+    	when(repository.existsById(id))
+    		.thenReturn(Boolean.FALSE);
+    	
+    	ServiceException  se = assertThrows(ServiceException.class, () -> service.deleteById(id));
+    	
+    	assertEquals(ErrorCode.NOT_FOUND, se.getCode());
+    	assertTrue(se.getErrors().isEmpty());
+    }
+    
+    @Test
+    public void deleteById_exceptionIsNotExpected_CustomExceptionIsThrown() throws Exception {
+    	when(repository.existsById(id))
+    	.thenThrow(new RuntimeException("Not managed error"));
+	
+		ServiceException  se = assertThrows(ServiceException.class, () -> service.deleteById(id));
+		
+		assertEquals(ErrorCode.INTERNAL, se.getCode());
+		assertTrue(se.getErrors().isEmpty());
+    }
+    
+    @Test
+    public void deleteById_EntityExists_EntityIsDeleted() throws Exception {
+    	when(repository.existsById(id))
+		.thenReturn(Boolean.TRUE);
+    	
+    	service.deleteById(id);
+    	
+    	verify(repository).deleteById(id);
     }
 
     @Test

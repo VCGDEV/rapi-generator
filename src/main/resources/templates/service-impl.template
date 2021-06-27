@@ -170,7 +170,7 @@ public class {entityName}ServiceImpl implements {entityName}Service {
     * Delete entity by ID
     * @param id the id to be removed from DB
     */
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false, rollbackFor = ServiceException.class)
     public void deleteById({classId} id) throws ServiceException {
         try {
             if(!{entityVar}Repository.existsById(id)) {
